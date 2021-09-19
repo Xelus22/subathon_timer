@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { SketchPicker } from 'react-color';
 
 function HomePage(props) {
-    const [totalTimeSeconds, setTotalTimeSeconds] = useState(0);
     const [startingHours, setStartingHours] = useState(0);
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
@@ -12,22 +12,16 @@ function HomePage(props) {
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(0);
     const [T3SubsciptionTime, setT3SubsciptionTime] = useState(0);
     const [socketToken, setSocketToken] = useState("");
-
-    const handleClick = (e) => {
-        //...
-        let totalTime = startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1;
-        setTotalTimeSeconds(totalTime);
-        console.log('Time: ', startingHours, startingMinutes, startingSeconds);  
-        console.log('bits Time: ', bitsTime);
-        console.log('dono Time: ', donationsTime);
-        console.log('t1 Time: ', T1SubsciptionTime);
-        console.log('t2 Time: ', T2SubsciptionTime);
-        console.log('t3 Time: ', T3SubsciptionTime);
-    }
-
-
+    const [color, setColor] = useState("#000000");
+    const [fontSize, setFontSize] = useState(150);
+    
+    const changeSpy = (props) =>{
+        console.dir(props.hex);
+        setColor(props.hex);
+    };
+    
     return (
-        <div>
+        <div style={{ backgroundColor: 'white' }}>
             <h1> hi </h1>
             <span> Hours </span>
             <input type="number" id="hours" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
@@ -53,28 +47,44 @@ function HomePage(props) {
             <input type="number" id="Seconds" value={T3SubsciptionTime} onChange={e => setT3SubsciptionTime(e.target.value)}/>
             <br/>
             <span> Streamlabs Socket API Token (MUST BE ENTERED) </span>
-            <input required type="text" id="JWT-Token" value={socketToken} onChange={e => setSocketToken(e.target.value)}/>
+            <input type="text" id="JWT-Token" value={socketToken} onChange={e => setSocketToken(e.target.value)}/>
 
             <br/>
             <br/>
-            <button onClick={handleClick}>
-                Submit
+
+            <SketchPicker
+                color = { color }
+                onChange={ changeSpy }
+            />
+            <br/>
+            <span> Text size </span>
+            <input type="number" value={fontSize} onChange={e => setFontSize(e.target.value)}/>
+            <br/>
+            <span>  Count down timer size and colour on next page below </span>
+            <br/>
+            <span style={{color: color, fontSize: `${fontSize}px`}}> 00:00:00 </span>
+            <br/>
+            <br/>
+            <button>
+                <Link 
+                    to={{
+                        pathname: '/countdown',
+                        state: {
+                            timeSeconds: startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1,
+                            bitsTime: bitsTime,
+                            donationsTime: donationsTime,
+                            T1: T1SubsciptionTime,
+                            T2: T2SubsciptionTime,
+                            T3: T3SubsciptionTime,
+                            Token: socketToken,
+                            Color: color,
+                            FontSize: fontSize,
+                        }
+                    }}
+                > To Countdown</Link>
             </button>
 
-            <Link 
-                to={{
-                    pathname: '/countdown',
-                    state: {
-                        timeSeconds: totalTimeSeconds,
-                        bitsTime: bitsTime,
-                        donationsTime: donationsTime,
-                        T1: T1SubsciptionTime,
-                        T2: T2SubsciptionTime,
-                        T3: T3SubsciptionTime,
-                        Token: socketToken,
-                    }
-                }}
-            > To Countdown</Link>
+            
         </div>
     )
 }

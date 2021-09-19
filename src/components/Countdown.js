@@ -105,12 +105,14 @@ function Countdown(props) {
         setButtonShow(false);
     }
 
+    console.log(timerDisp);
+
     return ( 
         <div>
             { timerDisp > 0 ?
-                <span style={{fontSize:'200px'}}>{("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}</span>
+                <span style={{color: location.state.Color, fontSize:`${location.state.FontSize}px`}}>{("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}</span>
                 :
-                <span style={{fontSize:'200px'}}>TIME'S UP</span>
+                <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }
             
             { buttonShow ? <button style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
