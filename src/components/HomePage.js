@@ -3,14 +3,14 @@ import { Link, withRouter } from 'react-router-dom';
 import { SketchPicker } from 'react-color';
 
 function HomePage(props) {
-    const [startingHours, setStartingHours] = useState(0);
+    const [startingHours, setStartingHours] = useState(5);
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
-    const [bitsTime, setBitsTime] = useState(0);
-    const [donationsTime, setDonationsTimes] = useState(0);
-    const [T1SubsciptionTime, setT1SubsciptionTime] = useState(0);
-    const [T2SubsciptionTime, setT2SubsciptionTime] = useState(0);
-    const [T3SubsciptionTime, setT3SubsciptionTime] = useState(0);
+    const [bitsTime, setBitsTime] = useState(60);
+    const [donationsTime, setDonationsTimes] = useState(60);
+    const [T1SubsciptionTime, setT1SubsciptionTime] = useState(300);
+    const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
+    const [T3SubsciptionTime, setT3SubsciptionTime] = useState(900);
     const [socketToken, setSocketToken] = useState("");
     const [color, setColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(150);
