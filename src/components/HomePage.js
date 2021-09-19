@@ -113,6 +113,8 @@ function HomePage(props) {
             <br/>
             <span>  Count down timer size and colour on next page below </span>
             <br/>
+            <span> Click on the timer on the next page to come back to this screen </span>
+            <br/>
             <br/>
             <button onClick={ resetDefault }> Reset to Default </button>
             <br/>
