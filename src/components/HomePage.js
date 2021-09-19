@@ -22,7 +22,7 @@ function HomePage(props) {
     
     return (
         <div style={{ backgroundColor: 'white' }}>
-            <h1> Subathon Timer - add this as a browser source to your OBS </h1>
+            <h1> Subathon Timer - add this as a browser source to your OBS then interact with it </h1>
             <span> Hours </span>
             <input type="number" id="hours" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes </span>
