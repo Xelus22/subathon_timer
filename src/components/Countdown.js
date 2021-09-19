@@ -107,7 +107,7 @@ function Countdown(props) {
     return ( 
         <div>
             { timerDisp > 0 ?
-                <span style={{color: location.state.Color, fontSize:`${location.state.FontSize}px`}}>{("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}</span>
+                <span style={{color: location.state.Color, fontSize:`${location.state.FontSize}px`}}>{hours > 9 ? (hours) :("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}</span>
                 :
                 <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }

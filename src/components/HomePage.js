@@ -30,11 +30,11 @@ function HomePage(props) {
             <h1> Subathon Timer - add this as a browser source to your OBS then interact with it </h1>
             <h4> Made by <a href = "https://www.twitch.tv/xelus22">Xelus22</a></h4>
             <span> Hours </span>
-            <input type="number" id="hours" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
+            <input type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes </span>
-            <input type="number" id="minutes" value={startingMinutes} onChange={e => setStartingMinutes(e.target.value)}/>
+            <input type="number" id="minutes" min="0" max="59" value={startingMinutes} onChange={e => setStartingMinutes(e.target.value)}/>
             <span> Seconds </span>
-            <input type="number" id="Seconds" value={startingSeconds} onChange={e => setStartingSeconds(e.target.value)}/>
+            <input type="number" id="Seconds" min="0" max="59" value={startingSeconds} onChange={e => setStartingSeconds(e.target.value)}/>
             <br/>
 
             <span> Seconds per 100 bits </span>
@@ -67,7 +67,7 @@ function HomePage(props) {
                                 onChange={ changeSpy }
                             />
                         </td>
-                        <td><span style={{color: color, fontSize: `${fontSize}px`}}> {("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
+                        <td><span style={{color: color, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
                     </tr>
                 </tbody>
             </table>
