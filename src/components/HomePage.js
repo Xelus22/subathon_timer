@@ -22,7 +22,7 @@ function HomePage(props) {
     
     return (
         <div style={{ backgroundColor: 'white' }}>
-            <h1> hi </h1>
+            <h1> Subathon Timer - add this as a browser source to your OBS </h1>
             <span> Hours </span>
             <input type="number" id="hours" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes </span>
@@ -46,7 +46,8 @@ function HomePage(props) {
             <span> T3 Subscription Time (seconds) </span>
             <input type="number" id="Seconds" value={T3SubsciptionTime} onChange={e => setT3SubsciptionTime(e.target.value)}/>
             <br/>
-            <span> Streamlabs Socket API Token (MUST BE ENTERED) </span>
+            <span> Streamlabs Socket API Token (MUST BE ENTERED - KEEP SECRET) </span><br/>
+            <span> Streamlabs -> settings -> API tokens -> Your Socket API Token </span>
             <input type="text" id="JWT-Token" value={socketToken} onChange={e => setSocketToken(e.target.value)}/>
 
             <br/>
