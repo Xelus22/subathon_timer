@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { SketchPicker } from 'react-color';
 
@@ -24,6 +24,16 @@ function HomePage(props) {
         setSocketToken(target);
         localStorage.setItem('token', target);
     };
+
+    useEffect(() => {
+        if(localStorage.totalTimeSeconds === undefined) {
+        } else if ( localStorage.totalTimeSeconds) {
+            setStartingHours(Math.floor((localStorage.totalTimeSeconds/ (60 * 60))));
+            setStartingMinutes(Math.floor((localStorage.totalTimeSeconds / 60) % 60));
+            setStartingSeconds(Math.floor((localStorage.totalTimeSeconds) % 60));
+        }
+        // eslint-disable-next-line
+    }, []);
     
     return (
         <div style={{ backgroundColor: 'white' }}>

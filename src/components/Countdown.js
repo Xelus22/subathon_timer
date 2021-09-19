@@ -32,6 +32,7 @@ function Countdown(props) {
         const toDisp = Math.floor((basis - timer) / 1000)
         if (timerDisp !== toDisp) {
           setTimerDisp(toDisp)
+          localStorage.setItem('totalTimeSeconds', toDisp);
         }
     }
     // eslint-disable-next-line
