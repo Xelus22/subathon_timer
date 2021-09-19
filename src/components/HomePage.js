@@ -25,6 +25,19 @@ function HomePage(props) {
         setFontSize(props);
     };
 
+    const resetDefault = () =>{
+        setStartingHours(5);
+        setStartingMinutes(0);
+        setStartingSeconds(0);
+        setBitsTime(60);
+        setDonationsTimes(60);
+        setT1SubsciptionTime(300);
+        setT2SubsciptionTime(600);
+        setT3SubsciptionTime(900);
+        setColor("#000000");
+        setFontSize(150);
+    };
+
     const saveToken = (target) => {
         setSocketToken(target);
         localStorage.setItem('token', target);
@@ -99,6 +112,9 @@ function HomePage(props) {
             <input type="number" value={fontSize} onChange={e => changeFont(e.target.value)}/>
             <br/>
             <span>  Count down timer size and colour on next page below </span>
+            <br/>
+            <br/>
+            <button onClick={ resetDefault }> Reset to Default </button>
             <br/>
             <br/>
             <br/>
