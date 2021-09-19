@@ -15,9 +15,14 @@ function HomePage(props) {
     const [color, setColor] = useState("#000000");
     const [fontSize, setFontSize] = useState(150);
     
-    const changeSpy = (props) =>{
-        console.dir(props.hex);
+    const changeColor = (props) =>{
+        localStorage.setItem('color', color);
         setColor(props.hex);
+    };
+
+    const changeFont = (props) =>{
+        localStorage.setItem('fontSize', props);
+        setFontSize(props);
     };
 
     const saveToken = (target) => {
@@ -31,6 +36,14 @@ function HomePage(props) {
             setStartingHours(Math.floor((localStorage.totalTimeSeconds/ (60 * 60))));
             setStartingMinutes(Math.floor((localStorage.totalTimeSeconds / 60) % 60));
             setStartingSeconds(Math.floor((localStorage.totalTimeSeconds) % 60));
+        }
+
+        if(localStorage.color) {
+            setColor(localStorage.color);
+        }
+
+        if(localStorage.fontSize) {
+            setFontSize(localStorage.fontSize);
         }
         // eslint-disable-next-line
     }, []);
@@ -74,7 +87,7 @@ function HomePage(props) {
                         <td>
                             <SketchPicker
                                 color = { color }
-                                onChange={ changeSpy }
+                                onChange={ changeColor }
                             />
                         </td>
                         <td><span style={{color: color, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
@@ -83,7 +96,7 @@ function HomePage(props) {
             </table>
             <br/>
             <span> Text size </span>
-            <input type="number" value={fontSize} onChange={e => setFontSize(e.target.value)}/>
+            <input type="number" value={fontSize} onChange={e => changeFont(e.target.value)}/>
             <br/>
             <span>  Count down timer size and colour on next page below </span>
             <br/>
