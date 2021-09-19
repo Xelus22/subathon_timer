@@ -18,7 +18,6 @@ function Countdown(props) {
     useEffect(() => {
       let _intervalId;
       if (basis)
-        console.log("basis: ",basis); 
         _intervalId = setInterval(() => {
             setTimer(new Date().valueOf());
           }, 100)
@@ -104,8 +103,6 @@ function Countdown(props) {
         setBasis(t.valueOf());
         setButtonShow(false);
     }
-
-    console.log(timerDisp);
 
     return ( 
         <div>
