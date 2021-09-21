@@ -81,14 +81,22 @@ function HomePage(props) {
     }
 
     const setSeconds = (target) => {
-        if (target >= 60) {
+        if (target >= 60 && startingMinutes >=59) {
+            setStartingHours(startingHours + 1);
+            setStartingMinutes(0);
             setStartingSeconds(0);
-            setStartingMinutes(startingMinutes + 1);
+        } else if (target < 0 && startingMinutes === 0 && startingHours > 0) {
+            setStartingHours(startingHours - 1);
+            setStartingMinutes(59);
+            setStartingSeconds(59);
         } else if (target < 0 && startingMinutes > 0) {
             setStartingSeconds(59);
             setStartingMinutes(startingMinutes - 1);
-        } else if (target < 0 && startingMinutes <= 0) {
+        } else if (target < 0 && startingMinutes <= 0 && startingHours <= 0) {
             setStartingSeconds(0);
+        } else if (target >= 60) {
+            setStartingSeconds(0);
+            setStartingMinutes(startingMinutes + 1);
         } else {
             setStartingSeconds(target);
         }
