@@ -16,9 +16,12 @@ function HomePage(props) {
     const [fontSize, setFontSize] = useState(150);
     
     const changeColor = (props) =>{
-        console.log(props);
+        console.log(props.rgb);
         setColor(props.rgb);
-        localStorage.setItem('color', props.rgb);
+        localStorage.setItem('colorR', props.rgb.r);
+        localStorage.setItem('colorG', props.rgb.g);
+        localStorage.setItem('colorB', props.rgb.b);
+        localStorage.setItem('colorA', props.rgb.a);
     };
 
     const changeFont = (props) =>{
@@ -45,15 +48,14 @@ function HomePage(props) {
     };
 
     useEffect(() => {
-        if(localStorage.totalTimeSeconds === undefined) {
-        } else if ( localStorage.totalTimeSeconds) {
+        if(localStorage.totalTimeSeconds !== undefined) {
             setStartingHours(Math.floor((localStorage.totalTimeSeconds/ (60 * 60))));
             setStartingMinutes(Math.floor((localStorage.totalTimeSeconds / 60) % 60));
             setStartingSeconds(Math.floor((localStorage.totalTimeSeconds) % 60));
         }
 
-        if(localStorage.color) {
-            setColor(localStorage.color);
+        if(localStorage.colorR !== undefined) {
+            setColor({r:localStorage.colorR, g:localStorage.colorG, b:localStorage.colorB, a:localStorage.colorA});
         }
 
         if(localStorage.fontSize) {
