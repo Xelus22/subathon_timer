@@ -65,6 +65,34 @@ function HomePage(props) {
         }
         // eslint-disable-next-line
     }, []);
+
+    const setMinutes = (target) => {
+        if (target >= 60) {
+            setStartingMinutes(0);
+            setStartingHours(startingHours + 1);
+        } else if (target < 0 && startingHours > 0) {
+            setStartingMinutes(59);
+            setStartingHours(startingHours - 1);
+        } else if (target < 0 && startingHours <= 0) {
+            setStartingMinutes(0);
+        } else {
+            setStartingMinutes(target);
+        }
+    }
+
+    const setSeconds = (target) => {
+        if (target >= 60) {
+            setStartingSeconds(0);
+            setStartingMinutes(startingHours + 1);
+        } else if (target < 0 && startingHours > 0) {
+            setStartingSeconds(59);
+            setStartingMinutes(startingHours - 1);
+        } else if (target < 0 && startingHours <= 0) {
+            setStartingSeconds(0);
+        } else {
+            setStartingSeconds(target);
+        }
+    }
     
     return (
         <div style={{ backgroundColor: 'white' }}>
@@ -74,9 +102,9 @@ function HomePage(props) {
             <span> Hours </span>
             <input type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes </span>
-            <input type="number" id="minutes" min="0" max="59" value={startingMinutes} onChange={e => setStartingMinutes(e.target.value)}/>
+            <input type="number" id="minutes" min="-1" max="60" value={startingMinutes} onChange={e => setMinutes(e.target.value)}/>
             <span> Seconds </span>
-            <input type="number" id="Seconds" min="0" max="59" value={startingSeconds} onChange={e => setStartingSeconds(e.target.value)}/>
+            <input type="number" id="Seconds" min="-1" max="60" value={startingSeconds} onChange={e => setSeconds(e.target.value)}/>
             <br/>
 
             <span> Seconds per Follow </span>
