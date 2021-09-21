@@ -117,7 +117,7 @@ function HomePage(props) {
             <span> Click on the timer on the next page to come back to this screen </span>
             <br/>
             <br/>
-            <button onClick={ resetDefault }> Reset to Default </button>
+            <button onClick={ resetDefault }> Reset all to Default </button>
             <br/>
             <br/>
             <br/>
