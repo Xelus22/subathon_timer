@@ -65,6 +65,7 @@ function HomePage(props) {
         <div style={{ backgroundColor: 'white' }}>
             <h1> Subathon Timer - add this as a browser source to your OBS then interact with it </h1>
             <h4> Made by <a href = "https://www.twitch.tv/xelus22">Xelus22</a></h4>
+            <h4> Completely client end. No reliability on bots</h4>
             <span> Hours </span>
             <input type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes </span>
