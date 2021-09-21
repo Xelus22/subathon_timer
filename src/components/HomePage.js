@@ -81,11 +81,12 @@ function HomePage(props) {
     }
 
     const setSeconds = (target) => {
+        console.log(target, startingHours, startingMinutes, startingSeconds);
         if (target >= 60 && startingMinutes >=59) {
             setStartingHours(startingHours + 1);
             setStartingMinutes(0);
             setStartingSeconds(0);
-        } else if (target < 0 && startingMinutes === 0 && startingHours > 0) {
+        } else if (target < 0 && startingMinutes <= 0 && startingHours > 0) {
             setStartingHours(startingHours - 1);
             setStartingMinutes(59);
             setStartingSeconds(59);
