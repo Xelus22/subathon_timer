@@ -48,6 +48,7 @@ function Countdown(props) {
     }, [timerDisp])
 
     useEffect(() => {
+      localStorage.setItem('totalTimeSeconds', location.state.timeSeconds);
       setStreamlabs(io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']}));
       // eslint-disable-next-line
     }, []);

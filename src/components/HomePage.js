@@ -50,7 +50,7 @@ function HomePage(props) {
     };
 
     useEffect(() => {
-        if(localStorage.totalTimeSeconds !== undefined) {
+        if(localStorage.totalTimeSeconds) {
             setStartingHours(Math.floor((localStorage.totalTimeSeconds/ (60 * 60))));
             setStartingMinutes(Math.floor((localStorage.totalTimeSeconds / 60) % 60));
             setStartingSeconds(Math.floor((localStorage.totalTimeSeconds) % 60));
@@ -101,6 +101,10 @@ function HomePage(props) {
         } else {
             setStartingSeconds(target);
         }
+    }
+
+    const submit = () => {
+        localStorage.setItem('totalTimeSeconds', startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1);
     }
     
     return (
@@ -166,7 +170,7 @@ function HomePage(props) {
             <br/>
             <br/>
             <br/>
-            <button>
+            <button onClick={submit}>
                 <Link 
                     to={{
                         pathname: '/countdown',
