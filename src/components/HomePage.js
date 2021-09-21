@@ -12,12 +12,13 @@ function HomePage(props) {
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
     const [T3SubsciptionTime, setT3SubsciptionTime] = useState(900);
     const [socketToken, setSocketToken] = useState(localStorage.getItem('token'));
-    const [color, setColor] = useState("#000000");
+    const [color, setColor] = useState({ r: 0, g: 0, b: 0, a:100 });
     const [fontSize, setFontSize] = useState(150);
     
     const changeColor = (props) =>{
+        console.log(props);
+        setColor(props.rgb);
         localStorage.setItem('color', color);
-        setColor(props.hex);
     };
 
     const changeFont = (props) =>{
@@ -34,7 +35,7 @@ function HomePage(props) {
         setT1SubsciptionTime(300);
         setT2SubsciptionTime(600);
         setT3SubsciptionTime(900);
-        setColor("#000000");
+        setColor({ r: 51, g: 51, b: 51, a:100 });
         setFontSize(150);
     };
 
@@ -104,7 +105,7 @@ function HomePage(props) {
                                 onChange={ changeColor }
                             />
                         </td>
-                        <td><span style={{color: color, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
+                        <td><span style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
                     </tr>
                 </tbody>
             </table>

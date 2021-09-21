@@ -11,6 +11,7 @@ function Countdown(props) {
     const [intervalId, setIntervalId] = useState();
     const [buttonShow, setButtonShow] = useState(true);
     const [streamlabs, setStreamlabs] = useState()
+    const color = location.state.Color;
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
     let minutes = Math.floor((timerDisp / 60) % 60);
@@ -109,7 +110,10 @@ function Countdown(props) {
     return ( 
         <div>
             { timerDisp > 0 ?
-                <span onClick ={() => history.goBack()} style={{color: location.state.Color, fontSize:`${location.state.FontSize}px`}}>{hours > 9 ? (hours) :("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}</span>
+                <span onClick ={() => history.goBack()} 
+                  style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize:`${location.state.FontSize}px`}}>
+                    {hours > 9 ? (hours) :("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}
+                </span>
                 :
                 <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }
