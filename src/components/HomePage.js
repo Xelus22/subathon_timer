@@ -14,6 +14,7 @@ function HomePage(props) {
     const [socketToken, setSocketToken] = useState(localStorage.getItem('token'));
     const [color, setColor] = useState({ r: 0, g: 0, b: 0, a:100 });
     const [fontSize, setFontSize] = useState(150);
+    const [followTime, setFollowTime] = useState(0);
     
     const changeColor = (props) =>{
         console.log(props.rgb);
@@ -40,6 +41,7 @@ function HomePage(props) {
         setT3SubsciptionTime(900);
         setColor({ r: 51, g: 51, b: 51, a:100 });
         setFontSize(150);
+        setFollowTime(0);
     };
 
     const saveToken = (target) => {
@@ -77,6 +79,9 @@ function HomePage(props) {
             <input type="number" id="Seconds" min="0" max="59" value={startingSeconds} onChange={e => setStartingSeconds(e.target.value)}/>
             <br/>
 
+            <span> Seconds per Follow </span>
+            <input type="number" id="Seconds" value={followTime} onChange={e => setFollowTime(e.target.value)}/>
+            <br/>
             <span> Seconds per 100 bits </span>
             <input type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
             <br/>
@@ -138,6 +143,7 @@ function HomePage(props) {
                             Token: socketToken,
                             Color: color,
                             FontSize: fontSize,
+                            FollowTime: followTime,
                         }
                     }}
                 > To Countdown</Link>

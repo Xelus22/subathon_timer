@@ -56,10 +56,8 @@ function Countdown(props) {
       streamlabs.on('event', (eventData) => {
         if (eventData.type === 'donation') {
           //code to handle donation events
-          //console.log("donations time: ", eventData.message[0].amount);
-          var t = (basis + eventData.message[0].amount * location.state.donationsTime * 1000);
           clearInterval(intervalId);
-          setBasis(t);
+          setBasis(basis + eventData.message[0].amount * location.state.donationsTime * 1000);
         }
         if (eventData.for === 'twitch_account') {
           switch(eventData.type) {
@@ -80,17 +78,16 @@ function Countdown(props) {
                   add = location.state.T1;
                   break;
               }
-              //console.log("sub time add:",add);
               var s = (basis + add * 1000);
               clearInterval(intervalId);
               setBasis(s);
-              //console.log(eventData.message);
               break;
             case 'bits':
               var time = Math.floor(eventData.message[0].amount * location.state.bitsTime / 100);
-              //console.log("bits: ", eventData.message[0].amount);
-              //console.log("bits time add:", time);
               setBasis(basis + time * 1000);
+              break;
+            case 'follow':
+              setBasis(basis + location.state.FollowTime * 1000);
               break;
             default:
               //default case
