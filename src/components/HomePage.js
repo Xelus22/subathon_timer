@@ -18,7 +18,7 @@ function HomePage(props) {
     const changeColor = (props) =>{
         console.log(props);
         setColor(props.rgb);
-        localStorage.setItem('color', color);
+        localStorage.setItem('color', props.rgb);
     };
 
     const changeFont = (props) =>{
