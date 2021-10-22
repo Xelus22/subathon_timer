@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useLocation, useHistory } from 'react-router-dom';
 
+import { ClientCredentialsAuthProvider } from '@twurple/auth';
+import { ApiClient } from '@twurple/api';
+import { DirectConnectionAdapter, EventSubListener } from '@twurple/eventsub';
+
 function Countdown(props) {
     const io = require("socket.io-client");
     const location = useLocation();
@@ -12,6 +16,33 @@ function Countdown(props) {
     const [buttonShow, setButtonShow] = useState(true);
     const [streamlabs, setStreamlabs] = useState()
     const color = location.state.Color;
+
+    const clientId = process.env.CLIENT_ID;
+    const clientSecret = process.env.CLIENT_SECRET;
+
+    if (!clientId || !clientSecret) {
+      console.error('[error]: The "CLIENT_ID" and "CLIENT_SECRET" environment variable is required')
+      process.exit(1)
+  }
+
+    const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
+    const apiClient = new ApiClient({ authProvider });
+
+    const adapter = new DirectConnectionAdapter({
+      hostName: 'example.com',
+      sslCert: {
+        key: 'aaaaaaaaaaaaaaa',
+        cert: 'bbbbbbbbbbbbbbb'
+      }
+    });
+    const secret = 'thisShouldBeARandomlyGeneratedFixedString';
+    
+    const listener = new EventSubListener({
+      apiClient,
+      adapter: new NgrokAdapter(),
+      secret: 'thisShouldBeARandomlyGeneratedFixedString'
+    });
+    await listener.listen();
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
     let minutes = Math.floor((timerDisp / 60) % 60);
