@@ -52,7 +52,7 @@ function Countdown(props) {
       if (basis)
         _intervalId = setInterval(() => {
             setTimer(new Date().valueOf());
-          }, 100)
+          }, 50)
           setIntervalId(_intervalId)
         return () => {
           clearInterval(_intervalId)
