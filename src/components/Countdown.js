@@ -6,7 +6,6 @@ import { ApiClient } from '@twurple/api';
 import { DirectConnectionAdapter, EventSubListener } from '@twurple/eventsub';
 
 function Countdown(props) {
-    const io = require("socket.io-client");
     const location = useLocation();
     const history = useHistory();
     const [basis, setBasis] = useState();
@@ -36,7 +35,7 @@ function Countdown(props) {
       }
     });
     const secret = 'thisShouldBeARandomlyGeneratedFixedString';
-    
+
     const listener = new EventSubListener({
       apiClient,
       adapter: new NgrokAdapter(),
@@ -80,54 +79,56 @@ function Countdown(props) {
 
     useEffect(() => {
       localStorage.setItem('totalTimeSeconds', location.state.timeSeconds);
-      setStreamlabs(io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']}));
+      //PUT START LISTENER THINGO HERE PROBS
+
       // eslint-disable-next-line
     }, []);
 
-    if(streamlabs) {
-      streamlabs.on('event', (eventData) => {
-        if (eventData.type === 'donation') {
-          //code to handle donation events
-          clearInterval(intervalId);
-          setBasis(basis + eventData.message[0].amount * location.state.donationsTime * 1000);
-        }
-        if (eventData.for === 'twitch_account') {
-          switch(eventData.type) {
-            case 'resub':
-            case 'subscription':
-              //code to handle subscription event
-              var add;
-              switch(eventData.message[0].sub_plan) {
-                case '0':
-                  break;
-                case '2000':
-                  add = location.state.T2;
-                  break;
-                case '3000':
-                  add = location.state.T3;
-                  break;
-                default:
-                  add = location.state.T1;
-                  break;
-              }
-              var s = (basis + add * 1000);
-              clearInterval(intervalId);
-              setBasis(s);
-              break;
-            case 'bits':
-              var time = Math.floor(eventData.message[0].amount * location.state.bitsTime / 100);
-              setBasis(basis + time * 1000);
-              break;
-            case 'follow':
-              setBasis(basis + location.state.FollowTime * 1000);
-              break;
-            default:
-              //default case
-              //console.log(eventData.message);
-          }
-        }
-      });
-    }
+    // if(streamlabs) {
+    //   streamlabs.on('event', (eventData) => {
+    //     if (eventData.type === 'donation') {
+    //       //code to handle donation events
+    //       clearInterval(intervalId);
+    //       // Donation 
+    //       setBasis(basis + eventData.message[0].amount * location.state.donationsTime * 1000);
+    //     }
+    //     if (eventData.for === 'twitch_account') {
+    //       switch(eventData.type) {
+    //         case 'resub':
+    //         case 'subscription':
+    //           //code to handle subscription event
+    //           var add;
+    //           switch(eventData.message[0].sub_plan) {
+    //             case '0':
+    //               break;
+    //             case '2000':
+    //               add = location.state.T2;
+    //               break;
+    //             case '3000':
+    //               add = location.state.T3;
+    //               break;
+    //             default:
+    //               add = location.state.T1;
+    //               break;
+    //           }
+    //           var s = (basis + add * 1000);
+    //           clearInterval(intervalId);
+    //           setBasis(s);
+    //           break;
+    //         case 'bits':
+    //           var time = Math.floor(eventData.message[0].amount * location.state.bitsTime / 100);
+    //           setBasis(basis + time * 1000);
+    //           break;
+    //         case 'follow':
+    //           setBasis(basis + location.state.FollowTime * 1000);
+    //           break;
+    //         default:
+    //           //default case
+    //           //console.log(eventData.message);
+    //       }
+    //     }
+    //   });
+    // }
 
     const handleClick = () => {
         var t = new Date();
@@ -144,7 +145,7 @@ function Countdown(props) {
                     {hours > 9 ? (hours) :("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}
                 </span>
                 :
-                <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
+                <span onClick ={() => history.goBack()} style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }
             
             { buttonShow ? <button style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
