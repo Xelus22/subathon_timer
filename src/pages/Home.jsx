@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { SketchPicker } from 'react-color';
 
-function Home(props) {
+function Home() {
     const [startingHours, setStartingHours] = useState(5);
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
@@ -141,7 +141,7 @@ function Home(props) {
             <span class = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
             <span class = "font-sans font-bold text-xl"> If no token is given, defaults to just being a countdown timer </span><br/>
             <span> Streamlabs -> settings -> API tokens -> Your Socket API Token </span>
-            <input type="text" id="JWT-Token" value={socketToken} onChange={e => saveToken(e.target.value)}/>
+            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" value={socketToken} onChange={e => saveToken(e.target.value)}/>
             <br/>
             <br/>
             <span> Background of timer will be invisible </span><br/>
@@ -162,16 +162,15 @@ function Home(props) {
             <span> Text size </span>
             <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" value={fontSize} onChange={e => changeFont(e.target.value)}/>
             <br/>
-            <span>  Count down timer size and colour on next page below </span>
+            <br/>
+            <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={ resetDefault }> Reset all to Default </button>
+            <br/>
+            <br/>
+            <span> Count down timer size and colour on next page below </span>
             <br/>
             <span> Click on the timer on the next page to come back to this screen </span>
             <br/>
-            <br/>
-            <button onClick={ resetDefault }> Reset all to Default </button>
-            <br/>
-            <br/>
-            <br/>
-            <button onClick={submit}>
+            <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={submit}>
                 <Link 
                     to={{
                         pathname: '/countdown',

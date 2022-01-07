@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useLocation, useHistory } from 'react-router-dom';
+import io from 'socket.io-client';
 
 function Countdown(props) {
-    const io = require("socket.io-client");
     const location = useLocation();
     const history = useHistory();
     const [basis, setBasis] = useState();
@@ -10,8 +10,9 @@ function Countdown(props) {
     const [timerDisp, setTimerDisp] = useState(location.state.timeSeconds);
     const [intervalId, setIntervalId] = useState();
     const [buttonShow, setButtonShow] = useState(true);
-    const [streamlabs, setStreamlabs] = useState()
+    const [socket, setSocket] = useState();
     const color = location.state.Color;
+    // const socket = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']})
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
     let minutes = Math.floor((timerDisp / 60) % 60);
@@ -22,7 +23,7 @@ function Countdown(props) {
       if (basis)
         _intervalId = setInterval(() => {
             setTimer(new Date().valueOf());
-          }, 100)
+          }, 50)
           setIntervalId(_intervalId)
         return () => {
           clearInterval(_intervalId)
@@ -49,12 +50,16 @@ function Countdown(props) {
 
     useEffect(() => {
       localStorage.setItem('totalTimeSeconds', location.state.timeSeconds);
-      setStreamlabs(io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']}));
+      setSocket(io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']}));
       // eslint-disable-next-line
     }, []);
+    
+    if(socket) {
+      socket.on('connect', () => {
+        console.log(socket.connected); // true
+      });
 
-    if(streamlabs) {
-      streamlabs.on('event', (eventData) => {
+      socket.on('event', (eventData) => {
         if (eventData.type === 'donation') {
           //code to handle donation events
           clearInterval(intervalId);
@@ -107,7 +112,6 @@ function Countdown(props) {
 
     return ( 
         <div>
-            <span> test </span>
             { timerDisp > 0 ?
                 <span onClick ={() => history.goBack()} 
                   style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize:`${location.state.FontSize}px`}}>
@@ -117,7 +121,7 @@ function Countdown(props) {
                 <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }
             
-            { buttonShow ? <button style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
+            { buttonShow ? <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
         </div>
     )
 }
