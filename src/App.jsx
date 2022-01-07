@@ -1,19 +1,15 @@
 import React from 'react';
-import Navbar from './components/Navbar';
-import {BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import About from './pages/About';
+import Countdown from './pages/Countdown';
 
 function App() {
   return (
-    <BrowserRouter>
-    <div className="pt-20">
-      <Navbar />
+    <BrowserRouter basename="/">
       <Switch>
-        <Route path="/" component={Home} exact />
-        <Route path="/about" component={About} exact />
+        <Route exact path="/" component={Home}/>
+        <Route exact path="/countdown" component={Countdown}/>
       </Switch>
-    </div>
     </BrowserRouter>
   )
 }
