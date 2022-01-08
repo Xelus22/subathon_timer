@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { SketchPicker } from 'react-color';
+import FontPicker from 'font-picker-react';
 
 function Home() {
     const [startingHours, setStartingHours] = useState(5);
@@ -15,6 +16,7 @@ function Home() {
     const [color, setColor] = useState({ r: 0, g: 0, b: 0, a:100 });
     const [fontSize, setFontSize] = useState(150);
     const [followTime, setFollowTime] = useState(0);
+    const [font, setFont] = useState("Open Sans");
     
     const changeColor = (props) =>{
         console.log(props.rgb);
@@ -42,6 +44,7 @@ function Home() {
         setColor({ r: 0, g: 0, b: 0, a:100 });
         setFontSize(150);
         setFollowTime(0);
+        setFont("Open Sans");
     };
 
     const saveToken = (target) => {
@@ -49,6 +52,7 @@ function Home() {
         localStorage.setItem('token', target);
     };
 
+    // load in saved effects
     useEffect(() => {
         if(localStorage.totalTimeSeconds) {
             setStartingHours(Math.floor((localStorage.totalTimeSeconds/ (60 * 60))));
@@ -105,10 +109,11 @@ function Home() {
 
     const submit = () => {
         localStorage.setItem('totalTimeSeconds', startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1);
+        localStorage.setItem('fontType', font);
     }
     
     return (
-        <div>
+        <div class="bg-white">
             <div class = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
             <h4 class = "font-sans font-bold text-xl"> Made by <a href = "https://www.twitch.tv/xelus22" class = "text-blue-800">Xelus22</a></h4>
             <h4> Completely client end. No reliability on bots</h4>
@@ -148,13 +153,28 @@ function Home() {
             <table>
                 <tbody>
                     <tr>
-                        <td>
+                        <td rowSpan="2">
                             <SketchPicker
                                 color = { color }
                                 onChange={ changeColor }
                             />
                         </td>
-                        <td><span style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span></td>
+                        <td>
+                            <FontPicker
+                                apiKey="AIzaSyCzMaCc8--N8lwowxSl2hYq5dZkgeGvWyg "
+                                activeFontFamily={font}
+                                limit={70}
+                                sort={"popularity"}
+                                onChange={(nextFont) =>
+                                    setFont(nextFont.family)
+                                }
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="apply-font" style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -185,6 +205,7 @@ function Home() {
                             Color: color,
                             FontSize: fontSize,
                             FollowTime: followTime,
+                            FontType: font
                         }
                     }}
                 > To Countdown</Link>

@@ -114,7 +114,7 @@ function Countdown(props) {
         <div>
             { timerDisp > 0 ?
                 <span onClick ={() => history.goBack()} 
-                  style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize:`${location.state.FontSize}px`}}>
+                  style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontFamily:`${location.state.FontType}` , fontSize:`${location.state.FontSize}px`}}>
                     {hours > 9 ? (hours) :("0" + hours).slice(-2)}:{("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}
                 </span>
                 :
