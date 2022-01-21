@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, useLocation, useHistory } from 'react-router-dom';
 import io from 'socket.io-client';
 
+import { PubSubClient, PubSubSubscriptionMessage  } from '@twurple/pubsub';
+import { RefreshingAuthProvider } from '@twurple/auth';
+
 function Countdown(props) {
     const location = useLocation();
     const history = useHistory();
@@ -12,6 +15,33 @@ function Countdown(props) {
     const [buttonShow, setButtonShow] = useState(true);
     const [socket, setSocket] = useState();
     const color = location.state.Color;
+    
+    const [accessToken, setAccessToken] = useState("INITIAL_ACCESS_TOKEN");
+    const [refreshToken, setRefreshToken] = useState("INITIAL_REFRESH_TOKEN");
+    const [expiresIn, setExpiresIn] = useState(0);
+    const [obtainmentTimestamp, setObtainmentTimestamp] = useState(0);
+
+    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID
+    const clientSecret = import.meta.env.VITE_TWITCH_CLIENT_SECRET;
+    const authProvider = new RefreshingAuthProvider(
+      {
+        clientId,
+        clientSecret,
+        onRefresh: async newTokenData => {
+          setAccessToken(newTokenData.accessToken);
+          setRefreshToken(newTokenData.refreshToken);
+          setExpiresIn(newTokenData.expiresIn);
+          setObtainmentTimestamp(newTokenData.obtainmentTimestamp);
+        }
+      },
+      {accessToken, refreshToken, expiresIn, obtainmentTimestamp}
+    );
+
+    const pubSubClient = new PubSubClient();
+    const userId = await pubSubClient.registerUserListener(authProvider);
+    const listener = await pubSubClient.onSubscription(userId, (message: PubSubSubscriptionMessage) => {
+      console.log(`${message.userDisplayName} just subscribed!`);
+    });
     // const socket = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']})
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
@@ -23,7 +53,7 @@ function Countdown(props) {
       if (basis)
         _intervalId = setInterval(() => {
             setTimer(new Date().valueOf());
-          }, 50)
+          }, 10)
           setIntervalId(_intervalId)
         return () => {
           clearInterval(_intervalId)
