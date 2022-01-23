@@ -113,40 +113,40 @@ function Home() {
     }
     
     return (
-        <div class="bg-white">
-            <div class = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
-            <h4 class = "font-sans font-bold text-xl"> Made by <a href = "https://www.twitch.tv/xelus22" class = "text-blue-800">Xelus22</a></h4>
+        <div className="bg-white">
+            <div className = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
+            <h4 className = "font-sans font-bold text-xl"> Made by <a href = "https://www.twitch.tv/xelus22" className = "text-blue-800">Xelus22</a></h4>
             <h4> Completely client end. No reliability on bots</h4>
             <span> Hours: </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
             <span> Minutes: </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="minutes" min="-1" max="60" value={startingMinutes} onChange={e => setMinutes(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="minutes" min="-1" max="60" value={startingMinutes} onChange={e => setMinutes(e.target.value)}/>
             <span> Seconds: </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" min="-1" max="60" value={startingSeconds} onChange={e => setSeconds(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" min="-1" max="60" value={startingSeconds} onChange={e => setSeconds(e.target.value)}/>
             <br/>
 
             <span> Seconds per Follow </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={followTime} onChange={e => setFollowTime(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={followTime} onChange={e => setFollowTime(e.target.value)}/>
             <br/>
             <span> Seconds per 100 bits </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
             <br/>
             <span> Donations - seconds per $1 </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={donationsTime} onChange={e => setDonationsTimes(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={donationsTime} onChange={e => setDonationsTimes(e.target.value)}/>
             <br/>
             <span> T1 Subscription Time (seconds) </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T1SubsciptionTime} onChange={e => setT1SubsciptionTime(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T1SubsciptionTime} onChange={e => setT1SubsciptionTime(e.target.value)}/>
             <br/>
             <span> T2 Subscription Time (seconds) </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T2SubsciptionTime} onChange={e => setT2SubsciptionTime(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T2SubsciptionTime} onChange={e => setT2SubsciptionTime(e.target.value)}/>
             <br/>
             <span> T3 Subscription Time (seconds) </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T3SubsciptionTime} onChange={e => setT3SubsciptionTime(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T3SubsciptionTime} onChange={e => setT3SubsciptionTime(e.target.value)}/>
             <br/>
-            <span class = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
-            <span class = "font-sans font-bold text-xl"> If no token is given, defaults to just being a countdown timer </span><br/>
+            <span className = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
+            <span className = "font-sans font-bold text-xl"> If no token is given, defaults to just being a countdown timer </span><br/>
             <span> Streamlabs -> settings -> API tokens -> Your Socket API Token </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" value={socketToken} onChange={e => saveToken(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" value={socketToken} onChange={e => saveToken(e.target.value)}/>
             <br/>
             <br/>
             <span> Background of timer will be invisible </span><br/>
@@ -173,24 +173,24 @@ function Home() {
                     </tr>
                     <tr>
                         <td>
-                            <span class="apply-font" style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span>
+                            <span className="apply-font" style={{color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`, fontSize: `${fontSize}px`}}> {startingHours > 9 ? (startingHours) :("0" + startingHours).slice(-2)}:{("0" + startingMinutes).slice(-2)}:{("0" + startingSeconds).slice(-2)} </span>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <br/>
             <span> Text size </span>
-            <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" value={fontSize} onChange={e => changeFont(e.target.value)}/>
+            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" value={fontSize} onChange={e => changeFont(e.target.value)}/>
             <br/>
             <br/>
-            <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={ resetDefault }> Reset all to Default </button>
+            <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={ resetDefault }> Reset all to Default </button>
             <br/>
             <br/>
             <span> Count down timer size and colour on next page below </span>
             <br/>
             <span> Click on the timer on the next page to come back to this screen </span>
             <br/>
-            <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={submit}>
+            <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={submit}>
                 <Link 
                     to={{
                         pathname: '/countdown',

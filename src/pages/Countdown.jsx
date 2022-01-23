@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, useLocation, useHistory } from 'react-router-dom';
 import io from 'socket.io-client';
 
-import { PubSubClient, PubSubSubscriptionMessage  } from '@twurple/pubsub';
-import { RefreshingAuthProvider } from '@twurple/auth';
+import { PubSubClient } from '@twurple/pubsub';
+import { RefreshingAuthProvider, StaticAuthProvider } from '@twurple/auth';
 
 function Countdown(props) {
     const location = useLocation();
@@ -20,9 +20,13 @@ function Countdown(props) {
     const [refreshToken, setRefreshToken] = useState("INITIAL_REFRESH_TOKEN");
     const [expiresIn, setExpiresIn] = useState(0);
     const [obtainmentTimestamp, setObtainmentTimestamp] = useState(0);
+    
+    const pubSubClient = new PubSubClient();
 
     const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID
     const clientSecret = import.meta.env.VITE_TWITCH_CLIENT_SECRET;
+    console.log(clientSecret);
+
     const authProvider = new RefreshingAuthProvider(
       {
         clientId,
@@ -34,15 +38,32 @@ function Countdown(props) {
           setObtainmentTimestamp(newTokenData.obtainmentTimestamp);
         }
       },
-      {accessToken, refreshToken, expiresIn, obtainmentTimestamp}
+      { accessToken, refreshToken, expiresIn, obtainmentTimestamp }
     );
 
-    const pubSubClient = new PubSubClient();
-    const userId = await pubSubClient.registerUserListener(authProvider);
-    const listener = await pubSubClient.onSubscription(userId, (message: PubSubSubscriptionMessage) => {
-      console.log(`${message.userDisplayName} just subscribed!`);
-    });
-    // const socket = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']})
+    // useEffect(() => {
+    //   pubSubClient.registerUserListener(authProvider).then(uid => setUserId(uid));
+    // }, [userId]);
+
+    // useEffect(() => {
+    //   console.log("test");
+    //   console.log(userId);
+    //   pubSubClient.onSubscription(userId, (message) => {
+    //     console.log(`${message.userDisplayName} just subscribed!`);
+    //   }).then(listener => setListener(listener));
+    // }, [listener]);
+
+    // hack to use async effect functions without React complaining
+    function useAsyncEffect(fn, dependencies) {
+      useEffect(() => void fn(), dependencies);
+    }
+    // ...
+    useAsyncEffect(async () => {
+      const userId = await pubSubClient.registerUserListener(authProvider);
+      setListener(await pubSubClient.onSubscription(userId, (message) => {
+        console.log(`${message.userDisplayName} just subscribed!`);
+      }));
+    }, []);
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
     let minutes = Math.floor((timerDisp / 60) % 60);
@@ -151,7 +172,7 @@ function Countdown(props) {
                 <span style={{color: `${location.state.Color}`, fontSize:`${location.state.FontSize}px`}}>TIME'S UP</span>
             }
             
-            { buttonShow ? <button class="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
+            { buttonShow ? <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" style={{display:"block"}} onClick = {handleClick}>Start Timer</button> : <br></br>}
         </div>
     )
 }
