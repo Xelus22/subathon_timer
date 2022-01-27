@@ -29,9 +29,8 @@ function Home() {
         try {
             if(queryValues.sid && queryValues.sau) {
                 console.log("found xelus proxy");
-                setSid(queryString.sid);
-                setSau(queryString.sau);
-                console.log(sid, sau);
+                setSid(queryValues.sid);
+                setSau(queryValues.sau);
             }
         } catch {
             console.log("no login to twitch found");
