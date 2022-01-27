@@ -181,7 +181,6 @@ function Countdown(props) {
             //prime && T1
             setBasis(basis + location.state.T1 * amount * 1000);
           }
-          break;
         }
       });
     }
