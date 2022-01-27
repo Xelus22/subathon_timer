@@ -26,12 +26,12 @@ function Home() {
     const queryValues = queryString.parse(search);
 
     useEffect(() => {
-        console.log(queryValues);
         try {
             if(queryValues.sid && queryValues.sau) {
                 console.log("found xelus proxy");
                 setSid(queryString.sid);
                 setSau(queryString.sau);
+                console.log(sid, sau);
             }
         } catch {
             console.log("no login to twitch found");
