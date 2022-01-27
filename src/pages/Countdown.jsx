@@ -63,8 +63,10 @@ function Countdown(props) {
       }
 
       // check if theres a xelus(twitch) forwarder session
-      console.log(location.state.Sid, location.state.Sau);
       if (location.state.Sid == "" || location.state.Sau == "") {
+        // no login session
+        console.log("no xelus proxy websocket");
+      } else {
         setXelusSocket(io(`wss://xelus.me/ws`), 
         {
           transports: ['websocket'],
@@ -74,9 +76,6 @@ function Countdown(props) {
           }
         }
         )
-      } else {
-        // no login session
-        console.log("no xelus proxy websocket");
       }
     }, []);
 
