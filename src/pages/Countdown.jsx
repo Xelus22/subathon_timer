@@ -11,6 +11,7 @@ function Countdown(props) {
     const [intervalId, setIntervalId] = useState();
     const [buttonShow, setButtonShow] = useState(true);
     const [socket, setSocket] = useState();
+    const [xelusSocket, setXelusSocket] = useState();
     const color = location.state.Color;
 
     let hours = Math.floor((timerDisp/ (60 * 60)));
@@ -58,6 +59,11 @@ function Countdown(props) {
         // eslint-disable-next-line
       } else {
         console.log("NO TOKEN GIVEN")
+      }
+
+      // check if theres a xelus(twitch) forwarder session
+      if (location.state.Sid == "" || location.state.Sau == "") {
+        // no login session
       }
     }, []);
     

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useLocation } from 'react-router-dom';
+import queryString from 'query-string'
 import { SketchPicker } from 'react-color';
 import FontPicker from 'font-picker-react';
 
@@ -18,6 +19,25 @@ function Home() {
     const [followTime, setFollowTime] = useState(0);
     const [font, setFont] = useState("Open Sans");
     const [api, setApi] = useState(localStorage.getItem('apiType'));
+    const [sid, setSid] = useState("");
+    const [sau, setSau] = useState("");
+    // accept query from website
+    const { search } = useLocation();
+    const queryValues = queryString.parse(search);
+
+    useEffect(() => {
+        console.log(queryValues);
+        try {
+            if(queryValues.sid && queryValues.sau) {
+                console.log("found");
+                setSid(queryString.sid);
+                setSau(queryString.sau);
+            }
+        } catch {
+            console.log("no login to twitch found");
+        }
+    }, []);
+    
     
     const changeColor = (props) =>{
         console.log(props.rgb);
@@ -117,20 +137,16 @@ function Home() {
     return (
         <div className="bg-white">
             <div className = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
-            <h4 className = "font-sans font-bold text-xl"> Made by <a href = "https://www.twitch.tv/xelus22" className = "text-blue-800">Xelus22</a></h4>
-            <h4> Completely client end. No reliability on bots</h4>
             <table>
                 <tbody>
                     <tr>
                         <td>
                             <span> Hours: </span>
-                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="hours" min="0" value={startingHours} onChange={e => setStartingHours(e.target.value)}/>
-                            <br/>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="hours" min="0" value={startingHours} size="5" onChange={e => setStartingHours(e.target.value)}/>
                             <span> Minutes: </span>
-                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="minutes" min="-1" max="60" value={startingMinutes} onChange={e => setMinutes(e.target.value)}/>
-                            <br/>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="minutes" min="-1" max="60" value={startingMinutes} size="5" onChange={e => setMinutes(e.target.value)}/>
                             <span> Seconds: </span>
-                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" min="-1" max="60" value={startingSeconds} onChange={e => setSeconds(e.target.value)}/>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" min="-1" max="60" value={startingSeconds} size="5" onChange={e => setSeconds(e.target.value)}/>
                             <br/>
 
                             <span> Seconds per Follow </span>
@@ -229,6 +245,8 @@ function Home() {
                             FollowTime: followTime,
                             FontType: font,
                             Api: api,
+                            Sid: sid,
+                            Sau: sau,
                         }
                     }}
                 > To Countdown</Link>
