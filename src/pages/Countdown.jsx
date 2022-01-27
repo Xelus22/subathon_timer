@@ -64,6 +64,7 @@ function Countdown(props) {
       // check if theres a xelus(twitch) forwarder session
       if (location.state.Sid == "" || location.state.Sau == "") {
         // no login session
+        
       }
     }, []);
     

@@ -18,11 +18,12 @@ function Login() {
             </a>
             <br/>
             <h2>Rely on only streamlabs or streamelements API</h2>
-            <a href= "https://twitch-subathon-timer.netlify.app/home"> 
-                <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> No login </button> 
-            </a>
-
-
+            <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> 
+                <Link 
+                    to={{
+                        pathname: '/home',
+                    }}
+                > No login </Link> </button> 
         </div>
     )
 }
