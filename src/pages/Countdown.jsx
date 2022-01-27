@@ -64,9 +64,39 @@ function Countdown(props) {
       // check if theres a xelus(twitch) forwarder session
       if (location.state.Sid == "" || location.state.Sau == "") {
         // no login session
-        
+        setXelusSocket(io(`https://xelus.me/ws`), 
+          {
+            transports: ['websocket'],
+            extraHeaders: {
+              "x-session-id": `${location.state.Sid}`,
+              "x-session-secret": `${location.state.Sau}`
+            }
+          }
+        )
+      } else {
+        console.log("no xelus proxy websocket");
       }
     }, []);
+
+
+    // initialise xelus propxy websocket
+    if(xelusSocket) {
+      xelusSocket.on('connect', () => {
+        console.log("connected with xelus proxy forwarder");
+        console.log(socket.connected); // true
+      });
+
+      xelusSocket.on('disconnect', () => {
+        console.log("disconnected from xelus proxy Socket");
+      });
+
+      xelusSocket.on('authenticated', (data) => {
+        const {
+          status
+        } = data;
+        console.log(`Status: ${status}`);
+      });
+    }
     
     if(socket) {
       console.log("socket -test1");
@@ -85,31 +115,31 @@ function Countdown(props) {
           }
           if (eventData.for === 'twitch_account') {
             switch(eventData.type) {
-              case 'resub':
-              case 'subscription':
-                //code to handle subscription event
-                var add;
-                switch(eventData.message[0].sub_plan) {
-                  case '0':
-                    break;
-                  case '2000':
-                    add = location.state.T2;
-                    break;
-                  case '3000':
-                    add = location.state.T3;
-                    break;
-                  default:
-                    add = location.state.T1;
-                    break;
-                }
-                var s = (basis + add * 1000);
-                clearInterval(intervalId);
-                setBasis(s);
-                break;
-              case 'bits':
-                var time = Math.floor(eventData.message[0].amount * location.state.bitsTime / 100);
-                setBasis(basis + time * 1000);
-                break;
+              // case 'resub':
+              // case 'subscription':
+              //   //code to handle subscription event
+              //   var add;
+              //   switch(eventData.message[0].sub_plan) {
+              //     case '0':
+              //       break;
+              //     case '2000':
+              //       add = location.state.T2;
+              //       break;
+              //     case '3000':
+              //       add = location.state.T3;
+              //       break;
+              //     default:
+              //       add = location.state.T1;
+              //       break;
+              //   }
+              //   var s = (basis + add * 1000);
+              //   clearInterval(intervalId);
+              //   setBasis(s);
+              //   break;
+              // case 'bits':
+              //   var time = Math.floor(eventData.message[0].amount * location.state.bitsTime / 100);
+              //   setBasis(basis + time * 1000);
+              //   break;
               case 'follow':
                 setBasis(basis + location.state.FollowTime * 1000);
                 break;
@@ -141,12 +171,6 @@ function Countdown(props) {
           console.log(data);
         });
         socket.on('event:test', (data)=> {
-          console.log(data);
-        });
-        socket.on('event:update', (data) => {
-          console.log(data);
-        });
-        socket.on('event:reset', (data) => {
           console.log(data);
         });
       }

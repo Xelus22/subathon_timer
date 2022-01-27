@@ -135,7 +135,7 @@ function Home() {
     }
     
     return (
-        <div className="bg-white">
+        <div className="bg-white px-4">
             <div className = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
             <table>
                 <tbody>
