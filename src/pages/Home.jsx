@@ -134,7 +134,7 @@ function Home() {
     }
     
     return (
-        <div className="bg-white px-4">
+        <div className="bg-white px-4 font-sans">
             <div className = "font-sans font-bold text-2xl"> Subathon Timer - add this as a browser source to your OBS then interact with it </div>
             <table>
                 <tbody>
@@ -169,14 +169,19 @@ function Home() {
                         <td>
                             <span className = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
                             <span className = "font-sans font-bold text-xl"> OR StreamElements JWT Token </span><br/>
+                            <span className = "font-sans font-bold text-xl"> StreamElements is MORE RELIABLE than StreamLabs </span><br/>
+                            <span className = "font-sans font-bold text-xl"> Pick whichever you have donations setup for</span><br/>
                             <span className = "font-sans font-bold text-xl"> If no token is given, defaults to just being a countdown timer </span><br/>
                             <span> Streamlabs -> settings -> API tokens -> Your Socket API Token </span>
                             <br/>
-                            <select id = "dropdown" value = {api} onChange={e => setApi(e.target.value)}>
+                            <button className={`${api == "0" ? "bg-sky-500 text-white" : "bg-zinc-200 text-black"} hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 mx-2 text-xm leading-5 rounded-md font-semibold`} onClick={e => {setApi("0")}}> None </button> 
+                            <button className={`${api == "1" ? "bg-sky-500 text-white" : "bg-zinc-200 text-black"} hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 mx-2 text-xm leading-5 rounded-md font-semibold`} onClick={e => {setApi("1")}}> StreamLabs </button> 
+                            <button className={`${api == "2" ? "bg-sky-500 text-white" : "bg-zinc-200 text-black"} hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 mx-2 text-xm leading-5 rounded-md font-semibold`} onClick={e => {setApi("2")}}> StreamElements </button> 
+                            {/* <select id = "dropdown" value = {api} onChange={e => setApi(e.target.value)}>
                                 <option value = "0">None</option>
                                 <option value = "1">Streamlabs Token</option>
                                 <option value = "2">StreamElements JWT Token</option>
-                            </select>   
+                            </select>    */}
                             <br/>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" value={socketToken} onChange={e => saveToken(e.target.value)}/>
                         </td>
