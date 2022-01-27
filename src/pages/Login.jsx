@@ -13,13 +13,15 @@ function Login() {
             <h5> Add this as a browser source to your OBS then interact with it </h5>
             <h4> Please login and authorize usage of twitch for the most reliable service</h4>
             
-            <a href= "https://xelus.me/login"> 
-                <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> Login </button> 
+            { /* beta */ }
+            {/* <a href= "https://xelus.me/login">  */}
+            <a href= "#"> 
+                <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> Login - Disabled For Now</button> 
             </a>
             <br/>
             <h2>Rely on only streamlabs or streamelements API</h2>
-            <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> 
-                <Link 
+            <button disabled="true" className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> 
+                <Link disabled = "true"
                     to={{
                         pathname: '/home',
                     }}

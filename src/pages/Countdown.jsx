@@ -100,7 +100,6 @@ function Countdown(props) {
   }
 
   if (socket) {
-    console.log("socket -test1");
     if (location.state.Api == "1") {
       //streamlabs
       socket.on("connect", () => {
@@ -164,23 +163,38 @@ function Countdown(props) {
       });
 
       socket.on("event", (data) => {
-        console.log(data);
+        // console.log(data);
       });
+
       socket.on("event:test", (data) => {
-        console.log(data);
         if (data.listener == "follower-latest") {
+          clearInterval(intervalId);
           setBasis(basis + location.state.FollowTime * 1000);
         } else if (data.listener == "subscriber-latest" && !xelusSocket) {
           // dont run this if xelusSocket for subs is running
-          let amount = data.listener.amount;
+          console.log("added time sub - streamelements");
+          // let amount = data.event.amount;
+          let amount = 1;
+          console.log(amount);
           if (data.listener.tier == 2000) {
+            clearInterval(intervalId);
             setBasis(basis + location.state.T2 * amount * 1000);
           } else if (data.listener.tier == 3000) {
+            clearInterval(intervalId);
             setBasis(basis + location.state.T3 * amount * 1000);
           } else {
             //prime && T1
+            clearInterval(intervalId);
             setBasis(basis + location.state.T1 * amount * 1000);
           }
+        } else if (data.listener == "cheer-latest" && !xelusSocket) {
+          console.log(data);
+          let amount = data.event.amount;
+          var time = Math.floor(amount * location.state.bitsTime / 100);
+          setBasis(basis + time * 1000);
+        } else if (data.listener == "tip-latest") {
+          let amount = data.event.amount;
+          setBasis(basis + amount * location.state.donationsTime * 1000);
         }
       });
     }
