@@ -29,7 +29,7 @@ function Home() {
         console.log(queryValues);
         try {
             if(queryValues.sid && queryValues.sau) {
-                console.log("found");
+                console.log("found xelus proxy");
                 setSid(queryString.sid);
                 setSau(queryString.sau);
             }

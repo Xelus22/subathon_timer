@@ -50,30 +50,32 @@ function Countdown(props) {
 
     useEffect(() => {
       localStorage.setItem('totalTimeSeconds', location.state.timeSeconds);
-      if(location.state.Api == "1") {
+      if (location.state.Token == "" || location.state.Api == "0") {
+        console.log("NO STREAMLABS/STREAMELEMENTS TOKEN GIVEN")
+      }
+      else if(location.state.Api == "1") {
         //streamlabs
         setSocket(io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ['websocket']}));
         // eslint-disable-next-line
       } else if (location.state.Api == "2") {
         setSocket(io(`https://realtime.streamelements.com`, {transports: ['websocket']}));
         // eslint-disable-next-line
-      } else {
-        console.log("NO TOKEN GIVEN")
       }
 
       // check if theres a xelus(twitch) forwarder session
+      console.log(location.state.Sid, location.state.Sau);
       if (location.state.Sid == "" || location.state.Sau == "") {
-        // no login session
         setXelusSocket(io(`wss://xelus.me/ws`), 
-          {
-            transports: ['websocket'],
-            extraHeaders: {
-              "x-session-id": `${location.state.Sid}`,
-              "x-session-secret": `${location.state.Sau}`
-            }
+        {
+          transports: ['websocket'],
+          extraHeaders: {
+            "x-session-id": `${location.state.Sid}`,
+            "x-session-secret": `${location.state.Sau}`
           }
+        }
         )
       } else {
+        // no login session
         console.log("no xelus proxy websocket");
       }
     }, []);
