@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Login from './pages/Login';
 import Home from './pages/Home';
 import Countdown from './pages/Countdown';
 import Error404 from './pages/Error404';
@@ -9,7 +9,8 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact render={() => <Home />}/>
+        <Route path="/" exact render={() => <Login />}/>
+        <Route path="/home" exact render={() => <Home />}/>
         <Route path="/countdown" exact render={() => <Countdown />}/>
         <Route path="/docs" exact render={() => <Error404 />}/>
         <Route component={Error404} />
