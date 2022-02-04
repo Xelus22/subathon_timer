@@ -86,11 +86,20 @@ function Countdown(props) {
   if (xelusSocket) {
     xelusSocket.on("connect", () => {
       console.log("connected with xelus proxy forwarder");
+      xelusSocket.emit("authenticate", {
+        "sessionId":location.state.Sid,
+        "sessionSecret":location.state.Sau
+      })
       console.log(socket.connected); // true
     });
 
     xelusSocket.on("disconnect", () => {
       console.log("disconnected from xelus proxy forwarder");
+    });
+    
+    xelusSocket.on("event", (data) => {
+      console.log("event data");
+      console.log(data);
     });
 
     xelusSocket.on("authenticated", (data) => {
