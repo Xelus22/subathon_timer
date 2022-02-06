@@ -109,6 +109,22 @@ function Countdown(props) {
             break;
           case "channel.subscription.gift":
             console.log("GIFTED??? Amount:" + data.event.total);
+            let amount = data.event.total;
+            let multiplier = 1;
+            // console.log(amount);
+            switch(data.event.tier) {
+              case '2000':
+                multiplier = location.state.T2;
+                break;
+              case '3000':
+                multiplier = location.state.T3;
+                break;
+              default:
+                multiplier = location.state.T1;
+                break;
+            }
+            clearInterval(intervalId);
+            setBasis(basis + multiplier * amount * 1000);
             break;
           case "channel.cheer":
             var bitsAmount = data.event.bits;
