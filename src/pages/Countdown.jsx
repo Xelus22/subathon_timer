@@ -51,7 +51,8 @@ function Countdown(props) {
     if(lastMessage !== null) {
       console.log("last message is this:")
       console.log(lastMessage);
-      if (lastMessage.subscription !== null && lastMessage.subscription.type !== null) {
+      if (lastMessage !== null && lastMessage.hasOwnProperty("subscription") && lastMessage.subscription.hasOwnProperty("type")) {
+        console.log("is a subscription event");
         switch(lastMessage.subscription.type) {
           case "channel.subscribe":
             var add;
