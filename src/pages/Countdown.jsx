@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client";
-// import * as WebSocket from 'ws';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 
 function Countdown(props) {
@@ -15,6 +15,51 @@ function Countdown(props) {
   const [socket, setSocket] = useState();
   const [xelusSocket, setXelusSocket] = useState();
   const color = location.state.Color;
+
+  //web socket 
+  const {
+    sendMessage,
+    sendJsonMessage,
+    lastMessage,
+    readyState,
+    getWebSocket
+  } = useWebSocket('wss://xelus.me/ws', {
+    onOpen: () =>  {
+      console.log('opened xelus websocket');
+      sendJsonMessage({
+        "sessionId":location.state.Sid,
+        "sessionSecret":location.state.Sau
+      });
+    },
+    //Will attempt to reconnect on all close events, such as server shutting down
+    shouldReconnect: (closeEvent) => false,
+    onMessage: (event) => {
+      console.log("event happened on xelus socket");
+      console.log(event);
+    },
+    onError: (event) => {
+      console.log("error happened on xelus socket");
+      console.log(event);
+    },
+    onClose: (event) => {
+      console.log("close event happened on xelus socket");
+      console.log(event);
+    }
+  }); 
+
+  useEffect(() => {
+    if(lastMessage !== null) {
+      console.log("last message: is this:")
+      console.log(lastMessage);
+    }
+  }, [lastMessage]);
+
+  useEffect(() => {
+    if(readyState !== null) {
+      console.log("readyState:")
+      console.log(readyState);
+    }
+  }, [readyState]);
 
   let hours = Math.floor(timerDisp / (60 * 60));
   let minutes = Math.floor((timerDisp / 60) % 60);
@@ -74,42 +119,12 @@ function Countdown(props) {
       // no login session
       console.log("no xelus proxy websocket");
     } else {
-      setXelusSocket(new WebSocket('wss://xelus.me/ws'));
+      console.log("yes xelus proxy websocket");
+      setXelusSocket("exists");
     }
   }, []);
 
-  // initialise xelus propxy websocket
-  if (xelusSocket) {
-    xelusSocket.on("connect", () => {
-      console.log("connected with xelus proxy forwarder");
-      xelusSocket.send("authenticate", {
-        "sessionId":location.state.Sid,
-        "sessionSecret":location.state.Sau
-      })
-      console.log(socket.connected); // true
-    });
-
-    xelusSocket.on("disconnect", () => {
-      console.log("disconnected from xelus proxy forwarder");
-    });
-    
-    xelusSocket.on("message", (data) => {
-      console.log("message data");
-      console.log(data);
-    });
-
-    xelusSocket.on("event", (data) => {
-      console.log("event data");
-      console.log(data);
-    });
-
-    xelusSocket.on("authenticated", (data) => {
-      const { status } = data;
-      console.log(`Status: ${status}`);
-    });
-  }
-
-  if (socket) {
+    if (socket) {
     if (location.state.Api == "1") {
       //streamlabs
       socket.on("connect", () => {
