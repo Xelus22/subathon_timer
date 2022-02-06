@@ -47,7 +47,7 @@ function Countdown(props) {
       setXelusSocketURL("wss://xelus.me/ws");
     }
   }, []);
-  
+
   //web socket
   const {
     sendMessage,
@@ -83,12 +83,14 @@ function Countdown(props) {
     if(lastMessage !== null) {
       console.log("last message is this:")
       console.log(lastMessage);
-      if (lastMessage !== null && lastMessage.hasOwnProperty("subscription") && lastMessage.subscription.hasOwnProperty("type")) {
-        console.log("is a subscription event");
-        switch(lastMessage.subscription.type) {
+      let data = JSON.parse(lastMessage.data);
+      console.log(data);
+      if (data !== null && data.hasOwnProperty("subscription") && data.subscription.hasOwnProperty("type")) {
+        switch(data.subscription.type) {
           case "channel.subscribe":
+            console.log("is a subscription event");
             var add;
-            switch(lastMessage.event.tier) {
+            switch(data.event.tier) {
               case '0':
                 break;
               case '2000':
@@ -106,10 +108,10 @@ function Countdown(props) {
             setBasis(s);
             break;
           case "channel.subscription.gift":
-            console.log("GIFTED??? Amount:" + stringify(lastMessage.event.total));
+            console.log("GIFTED??? Amount:" + data.event.total);
             break;
           case "channel.cheer":
-            var bitsAmount = lastMessage.event.bits;
+            var bitsAmount = data.event.bits;
             var time = Math.floor(bitsAmount * location.state.bitsTime / 100);
             setBasis(basis + time * 1000);
             break;
