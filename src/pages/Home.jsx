@@ -9,7 +9,7 @@ function Home() {
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
     const [bitsTime, setBitsTime] = useState(60);
-    const [donationsTime, setDonationsTimes] = useState(60);
+    const [donationsTime, setDonationsTime] = useState(60);
     const [T1SubsciptionTime, setT1SubsciptionTime] = useState(300);
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
     const [T3SubsciptionTime, setT3SubsciptionTime] = useState(900);
@@ -57,7 +57,7 @@ function Home() {
         setStartingMinutes(0);
         setStartingSeconds(0);
         setBitsTime(60);
-        setDonationsTimes(60);
+        setDonationsTime(60);
         setT1SubsciptionTime(300);
         setT2SubsciptionTime(600);
         setT3SubsciptionTime(900);
@@ -79,13 +79,29 @@ function Home() {
             setStartingMinutes(Math.floor((localStorage.totalTimeSeconds / 60) % 60));
             setStartingSeconds(Math.floor((localStorage.totalTimeSeconds) % 60));
         }
-
         if(localStorage.colorR !== undefined) {
             setColor({r:localStorage.colorR, g:localStorage.colorG, b:localStorage.colorB, a:localStorage.colorA});
         }
-
         if(localStorage.fontSize) {
             setFontSize(localStorage.fontSize);
+        }
+        if(localStorage.T1SubsciptionTime) {
+            setT1SubsciptionTime(localStorage.T1SubsciptionTime);
+        }
+        if(localStorage.T2SubsciptionTime) {
+            setT2SubsciptionTime(localStorage.T2SubsciptionTime);
+        }
+        if(localStorage.T3SubsciptionTime) {
+            setT3SubsciptionTime(localStorage.T3SubsciptionTime);
+        }
+        if(localStorage.donationsTime) {
+            setDonationsTime(localStorage.donationsTime);
+        }
+        if(localStorage.bitsTime) {
+            setBitsTime(localStorage.bitsTime);
+        }
+        if(localStorage.followTime) {
+            setFollowTime(localStorage.followTime);
         }
         // eslint-disable-next-line
     }, []);
@@ -127,6 +143,16 @@ function Home() {
         }
     }
 
+    useEffect(() => {
+        localStorage.setItem('T1SubsciptionTime', T1SubsciptionTime);
+        localStorage.setItem('T2SubsciptionTime', T2SubsciptionTime);
+        localStorage.setItem('T3SubsciptionTime', T3SubsciptionTime);
+        localStorage.setItem('donationsTime', donationsTime);
+        localStorage.setItem('bitsTime', bitsTime);
+        localStorage.setItem('followTime', followTime);
+        // eslint-disable-next-line
+    }, [T1SubsciptionTime, T2SubsciptionTime, T3SubsciptionTime, donationsTime, bitsTime, followTime]);
+
     const submit = () => {
         localStorage.setItem('totalTimeSeconds', startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1);
         localStorage.setItem('fontType', font);
@@ -155,7 +181,7 @@ function Home() {
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
                             <br/>
                             <span> Donations - seconds per $1 </span>
-                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={donationsTime} onChange={e => setDonationsTimes(e.target.value)}/>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={donationsTime} onChange={e => setDonationsTime(e.target.value)}/>
                             <br/>
                             <span> T1 Subscription Time (seconds) </span>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T1SubsciptionTime} onChange={e => setT1SubsciptionTime(e.target.value)}/>

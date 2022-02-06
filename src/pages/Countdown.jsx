@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { stringify } from "query-string";
 
 
 function Countdown(props) {
@@ -13,17 +14,48 @@ function Countdown(props) {
   const [intervalId, setIntervalId] = useState();
   const [buttonShow, setButtonShow] = useState(true);
   const [socket, setSocket] = useState();
+  const [xelusSocketURL, setXelusSocketURL] = useState();
   const [xelusSocket, setXelusSocket] = useState();
   const color = location.state.Color;
 
-  //web socket 
+  useEffect(() => {
+    localStorage.setItem("totalTimeSeconds", location.state.timeSeconds);
+    if (location.state.Token == "" || location.state.Api == "0") {
+      console.log("NO STREAMLABS/STREAMELEMENTS TOKEN GIVEN");
+    } else if (location.state.Api == "1") {
+      //streamlabs
+      setSocket(
+        io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {
+          transports: ["websocket"],
+        })
+      );
+      // eslint-disable-next-line
+    } else if (location.state.Api == "2") {
+      setSocket(
+        io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
+      );
+      // eslint-disable-next-line
+    }
+
+    // check if theres a xelus(twitch) forwarder session
+    if (location.state.Sid == "" || location.state.Sau == "") {
+      // no login session
+      console.log("no xelus proxy websocket");
+    } else {
+      console.log("yes xelus proxy websocket");
+      setXelusSocket("exists");
+      setXelusSocketURL("wss://xelus.me/ws");
+    }
+  }, []);
+  
+  //web socket
   const {
     sendMessage,
     sendJsonMessage,
     lastMessage,
     readyState,
     getWebSocket
-  } = useWebSocket('wss://xelus.me/ws', {
+  } = useWebSocket(xelusSocketURL, {
     onOpen: () =>  {
       console.log('opened xelus websocket');
       sendJsonMessage({
@@ -74,7 +106,7 @@ function Countdown(props) {
             setBasis(s);
             break;
           case "channel.subscription.gift":
-            console.log("GIFTED???");
+            console.log("GIFTED??? Amount:" + stringify(lastMessage.event.total));
             break;
           case "channel.cheer":
             var bitsAmount = lastMessage.event.bits;
@@ -127,34 +159,6 @@ function Countdown(props) {
     // eslint-disable-next-line
   }, [timerDisp]);
 
-  useEffect(() => {
-    localStorage.setItem("totalTimeSeconds", location.state.timeSeconds);
-    if (location.state.Token == "" || location.state.Api == "0") {
-      console.log("NO STREAMLABS/STREAMELEMENTS TOKEN GIVEN");
-    } else if (location.state.Api == "1") {
-      //streamlabs
-      setSocket(
-        io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {
-          transports: ["websocket"],
-        })
-      );
-      // eslint-disable-next-line
-    } else if (location.state.Api == "2") {
-      setSocket(
-        io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
-      );
-      // eslint-disable-next-line
-    }
-
-    // check if theres a xelus(twitch) forwarder session
-    if (location.state.Sid == "" || location.state.Sau == "") {
-      // no login session
-      console.log("no xelus proxy websocket");
-    } else {
-      console.log("yes xelus proxy websocket");
-      setXelusSocket("exists");
-    }
-  }, []);
 
     if (socket) {
     if (location.state.Api == "1") {
