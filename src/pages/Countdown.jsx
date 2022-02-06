@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client";
+import * as WebSocket from 'ws';
+
 
 function Countdown(props) {
   const location = useLocation();
@@ -72,13 +74,7 @@ function Countdown(props) {
       // no login session
       console.log("no xelus proxy websocket");
     } else {
-      setXelusSocket(io(`wss://xelus.me/ws`), {
-        transports: ["websocket"],
-        extraHeaders: {
-          "x-session-id": `${location.state.Sid}`,
-          "x-session-secret": `${location.state.Sau}`,
-        },
-      });
+      setXelusSocket(new WebSocket('wss://xelus.me/ws'));
     }
   }, []);
 
@@ -86,7 +82,7 @@ function Countdown(props) {
   if (xelusSocket) {
     xelusSocket.on("connect", () => {
       console.log("connected with xelus proxy forwarder");
-      xelusSocket.emit("authenticate", {
+      xelusSocket.send("authenticate", {
         "sessionId":location.state.Sid,
         "sessionSecret":location.state.Sau
       })
@@ -97,6 +93,11 @@ function Countdown(props) {
       console.log("disconnected from xelus proxy forwarder");
     });
     
+    xelusSocket.on("message", (data) => {
+      console.log("message data");
+      console.log(data);
+    });
+
     xelusSocket.on("event", (data) => {
       console.log("event data");
       console.log(data);
