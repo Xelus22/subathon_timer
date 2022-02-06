@@ -16,7 +16,7 @@ function Login() {
             { /* beta */ }
             <a href= "https://xelus.me/login"> 
             {/* <a href= "#">  */}
-                <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> Login - Disabled For Now</button> 
+                <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"> Login </button> 
             </a>
             <br/>
             <h2>Rely on only streamlabs or streamelements API</h2>
