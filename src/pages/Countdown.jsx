@@ -294,7 +294,7 @@ function Countdown(props) {
     <div>
       {timerDisp > 0 ? (
         <span
-          onClick={() => history.goBack()}
+          onClick={() => history.push('/')}
           style={{
             color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
             fontFamily: `${location.state.FontType}`,
