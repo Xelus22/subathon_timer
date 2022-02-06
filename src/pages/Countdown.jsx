@@ -49,8 +49,38 @@ function Countdown(props) {
 
   useEffect(() => {
     if(lastMessage !== null) {
-      console.log("last message: is this:")
+      console.log("last message is this:")
       console.log(lastMessage);
+      if (lastMessage.subscription !== null && lastMessage.subscription.type !== null) {
+        switch(lastMessage.subscription.type) {
+          case "channel.subscribe":
+            var add;
+            switch(lastMessage.event.tier) {
+              case '0':
+                break;
+              case '2000':
+                add = location.state.T2;
+                break;
+              case '3000':
+                add = location.state.T3;
+                break;
+              default:
+                add = location.state.T1;
+                break;
+            }
+            var s = (basis + add * 1000);
+            clearInterval(intervalId);
+            setBasis(s);
+            break;
+          // case "channel.subscription.gift":
+          //   break;
+          case "channel.cheer":
+            var bitsAmount = lastMessage.event.bits;
+            var time = Math.floor(bitsAmount * location.state.bitsTime / 100);
+            setBasis(basis + time * 1000);
+            break;
+        }
+      }
     }
   }, [lastMessage]);
 
