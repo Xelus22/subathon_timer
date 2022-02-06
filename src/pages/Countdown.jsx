@@ -72,8 +72,9 @@ function Countdown(props) {
             clearInterval(intervalId);
             setBasis(s);
             break;
-          // case "channel.subscription.gift":
-          //   break;
+          case "channel.subscription.gift":
+            console.log("GIFTED???");
+            break;
           case "channel.cheer":
             var bitsAmount = lastMessage.event.bits;
             var time = Math.floor(bitsAmount * location.state.bitsTime / 100);
