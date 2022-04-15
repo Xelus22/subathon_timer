@@ -15,7 +15,7 @@ function Countdown(props) {
   const [buttonShow, setButtonShow] = useState(true);
   const [socket, setSocket] = useState();
   const [xelusSocketURL, setXelusSocketURL] = useState();
-  const [xelusSocket, setXelusSocket] = useState();
+  const [xelusSocket, setXelusSocket] = useState(null);
   const color = location.state.Color;
 
   useEffect(() => {
@@ -79,6 +79,7 @@ function Countdown(props) {
     }
   }); 
 
+  // Xelus Socket
   useEffect(() => {
     if(lastMessage !== null) {
       console.log("last message is this:")
@@ -177,8 +178,8 @@ function Countdown(props) {
     // eslint-disable-next-line
   }, [timerDisp]);
 
-
-    if (socket) {
+  // streamelements or streamlabs socket
+  if (socket) {
     if (location.state.Api == "1") {
       //streamlabs
       socket.on("connect", () => {
@@ -199,7 +200,7 @@ function Countdown(props) {
           if (eventData.type == "follow") {
             setBasis(basis + location.state.FollowTime * 1000);
           } else if ((eventData.type == "resub" || eventData.type == "subscription") && !xelusSocket) {
-            var add;
+            var add = 0;
             switch(eventData.message[0].sub_plan) {
               case '0':
                 break;
