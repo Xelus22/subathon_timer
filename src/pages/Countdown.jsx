@@ -92,8 +92,6 @@ function Countdown(props) {
             console.log("is a subscription event");
             var add;
             switch(data.event.tier) {
-              case '0':
-                break;
               case '2000':
                 add = location.state.T2;
                 break;
@@ -202,8 +200,6 @@ function Countdown(props) {
           } else if ((eventData.type == "resub" || eventData.type == "subscription") && !xelusSocket) {
             var add = 0;
             switch(eventData.message[0].sub_plan) {
-              case '0':
-                break;
               case '2000':
                 add = location.state.T2;
                 break;
