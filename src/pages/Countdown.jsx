@@ -18,6 +18,7 @@ function Countdown(props) {
   const username = "justinfan20394";
   const token = "";
   const channel = location.state.ChannelName;
+  console.log("channelconnected:", channel);
   
   const [lastSub, setLastSub] = useState("");
   const [lastResub, setLastResub] = useState("");
@@ -56,6 +57,7 @@ function Countdown(props) {
         const userName = message.username || "";
         const bits = message.bits || 0;
         console.log("CHEER");
+        console.log(message);
         console.log(`${userName} ${bits}`);
         setLastCheer(message);
       }
