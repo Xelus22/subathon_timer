@@ -5,7 +5,6 @@ import { Chat, ChatEvents } from 'twitch-js'
 
 function Countdown(props) {
   const location = useLocation();
-  console.log(location);
   const history = useHistory();
   const [basis, setBasis] = useState();
   const [timer, setTimer] = useState();
@@ -18,7 +17,6 @@ function Countdown(props) {
   const username = "justinfan20394";
   const token = "";
   const channel = location.state.ChannelName;
-  console.log("channelconnected:", channel);
   
   const [lastSub, setLastSub] = useState("");
   const [lastResub, setLastResub] = useState("");
@@ -83,7 +81,10 @@ function Countdown(props) {
     await chat.join(channel);
   };
 
-  useEffect(() => run(),[]);
+  useEffect(() => {
+    console.log("channelconnected:", channel);
+    run();
+  },[]);
 
   useEffect(() => {
     localStorage.setItem("totalTimeSeconds", location.state.timeSeconds);
