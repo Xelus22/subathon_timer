@@ -21,7 +21,7 @@ function Countdown(props) {
   const [lastSub, setLastSub] = useState("");
   const [lastResub, setLastResub] = useState("");
   const [lastCheer, setLastCheer] = useState("");
-  const [lastSubGift, setLastSubGift] = useState("");
+  // const [lastSubGift, setLastSubGift] = useState("");
   const [lastSubGiftCommunity, setLastSubGiftCommunity] = useState("");
 
   const run = async () => {
@@ -36,7 +36,7 @@ function Countdown(props) {
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
         console.log("SUBSCRIPTION");
-        console.log(`${userName} ${subPlan}`);
+        console.log(`${userName}`, subPlan);
         setLastSub(message);
       }
     });
@@ -46,7 +46,7 @@ function Countdown(props) {
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
         console.log("RESUBSCRIPTION");
-        console.log(`${userName} ${subPlan} ${msg}`);
+        console.log(`${userName} ${msg}`, subPlan);
         setLastResub(message);
       }
     });
@@ -56,23 +56,26 @@ function Countdown(props) {
         const bits = message.bits || 0;
         console.log("CHEER");
         console.log(message);
-        console.log(`${userName} ${bits}`);
+        console.log(`${userName} ${bits} bits`);
         setLastCheer(message);
       }
     });
-    chat.on("SUBSCRIPTION_GIFT", (message) => {
-      if (message != lastSubGift) {
-        const msg = message.systemMessage || "";
-        console.log("SUBSCRIPTION_GIFT");
-        console.log(msg);
-        setLastSubGift(message);
-      }
-    });
+    // chat.on("SUBSCRIPTION_GIFT", (message) => {
+    //   if (message != lastSubGift) {
+    //     const msg = message.systemMessage || "";
+    //     console.log("SUBSCRIPTION_GIFT");
+    //     console.log(msg);
+    //     setLastSubGift(message);
+    //   }
+    // });
     chat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
+        const numGifts = message.parameters.senderCount
+        const subPlan = message.parameters.subPlan || ""
         console.log("SUBSCRIPTION_GIFT_COMMUNITY");
-        console.log(msg);
+        console.log(numGifts, subPlan, msg);
+        console.log(message);
         setLastSubGiftCommunity(message);
       }
     });
