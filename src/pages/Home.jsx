@@ -4,7 +4,7 @@ import queryString from 'query-string'
 import { SketchPicker } from 'react-color';
 import FontPicker from 'font-picker-react';
 
-function Home() {
+function Home(props) {
     const [startingHours, setStartingHours] = useState(5);
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
@@ -14,29 +14,12 @@ function Home() {
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
     const [T3SubsciptionTime, setT3SubsciptionTime] = useState(900);
     const [socketToken, setSocketToken] = useState(localStorage.getItem('token'));
+    const [channelName, setChannelName] = useState("");
     const [color, setColor] = useState({ r: 0, g: 0, b: 0, a:100 });
     const [fontSize, setFontSize] = useState(150);
     const [followTime, setFollowTime] = useState(0);
     const [font, setFont] = useState("Open Sans");
-    const [api, setApi] = useState(localStorage.getItem('apiType'));
-    const [sid, setSid] = useState("");
-    const [sau, setSau] = useState("");
-    // accept query from website
-    const { search } = useLocation();
-    const queryValues = queryString.parse(search);
-
-    useEffect(() => {
-        try {
-            if(queryValues.sid && queryValues.sau) {
-                console.log("found xelus proxy");
-                setSid(queryValues.sid);
-                setSau(queryValues.sau);
-            }
-        } catch {
-            console.log("no login to twitch found");
-        }
-    }, []);
-    
+    const [api, setApi] = useState(localStorage.getItem('apiType')); 
     
     const changeColor = (props) =>{
         console.log(props.rgb);
@@ -103,6 +86,9 @@ function Home() {
         if(localStorage.followTime) {
             setFollowTime(localStorage.followTime);
         }
+        if(localStorage.channelName) {
+            setChannelName(localStorage.channelName);
+        }
         // eslint-disable-next-line
     }, []);
 
@@ -150,8 +136,9 @@ function Home() {
         localStorage.setItem('donationsTime', donationsTime);
         localStorage.setItem('bitsTime', bitsTime);
         localStorage.setItem('followTime', followTime);
+        localStorage.setItem('channelName', channelName);
         // eslint-disable-next-line
-    }, [T1SubsciptionTime, T2SubsciptionTime, T3SubsciptionTime, donationsTime, bitsTime, followTime]);
+    }, [T1SubsciptionTime, T2SubsciptionTime, T3SubsciptionTime, donationsTime, bitsTime, followTime, channelName]);
 
     const submit = () => {
         localStorage.setItem('totalTimeSeconds', startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1);
@@ -193,6 +180,9 @@ function Home() {
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={T3SubsciptionTime} onChange={e => setT3SubsciptionTime(e.target.value)}/>
                         </td>
                         <td>
+                            <span className = "font-sans font-bold text-xl"> Your Channel Name:</span>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" placeholder='channel name e.g. iitztimmy' value={channelName} onChange={e => setChannelName(e.target.value)}/>
+                            <br/>
                             <span className = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
                             <span className = "font-sans font-bold text-xl"> OR StreamElements JWT Token </span><br/>
                             <span className = "font-sans font-bold text-xl"> StreamElements is MORE RELIABLE than StreamLabs </span><br/>
@@ -259,7 +249,7 @@ function Home() {
             <span> Click on the timer on the next page to come back to this screen </span>
             <br/>
             <button className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white" onClick={submit}>
-                <Link 
+                <Link
                     to={{
                         pathname: '/countdown',
                         state: {
@@ -275,8 +265,7 @@ function Home() {
                             FollowTime: followTime,
                             FontType: font,
                             Api: api,
-                            Sid: sid,
-                            Sau: sau,
+                            ChannelName: channelName,
                         }
                     }}
                 > To Countdown</Link>
