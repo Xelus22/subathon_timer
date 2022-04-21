@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
-import io from "socket.io-client";
+import io from "socket.io-client"
 import { Chat, ChatEvents } from 'twitch-js'
+import { Countdown as countdownTimer} from 'react-countdown'
 
 function Countdown(props) {
   const location = useLocation();
@@ -38,6 +39,7 @@ function Countdown(props) {
         console.log("SUBSCRIPTION");
         console.log(`${userName}`, subPlan);
         setLastSub(message);
+        handleSubs(subPlan, 1);
       }
     });
     chat.on("RESUBSCRIPTION", (message) => {
@@ -48,6 +50,7 @@ function Countdown(props) {
         console.log("RESUBSCRIPTION");
         console.log(`${userName} ${msg}`, subPlan);
         setLastResub(message);
+        handleSubs(subPlan, 1);
       }
     });
     chat.on("CHEER", (message) => {
@@ -58,6 +61,7 @@ function Countdown(props) {
         console.log(message);
         console.log(`${userName} ${bits} bits`);
         setLastCheer(message);
+        handleBits(bits);
       }
     });
     // chat.on("SUBSCRIPTION_GIFT", (message) => {
@@ -75,8 +79,8 @@ function Countdown(props) {
         const subPlan = message.parameters.subPlan || ""
         console.log("SUBSCRIPTION_GIFT_COMMUNITY");
         console.log(numGifts, subPlan, msg);
-        console.log(message);
         setLastSubGiftCommunity(message);
+        handleSubs(subPlan, numGifts);
       }
     });
   
@@ -135,7 +139,7 @@ function Countdown(props) {
       }
     }
     // eslint-disable-next-line
-  }, [timer]);
+  }, [timer, basis]);
 
   useEffect(() => {
     if (timerDisp <= 0) {
@@ -192,6 +196,35 @@ function Countdown(props) {
     };
   };
 
+  const handleBits = (bits) => {
+    if (bits > 0) {
+      setBasis(basis + location.state.bitsTime * 1000);
+    } else {
+      console.log("bits ERROR", bits);
+    }
+  }
+
+  const handleSubs = (subType, subAmount) => {
+    console.log("prev basis:", basis);
+    switch (subType) {
+      case "Prime":
+      case "1000":
+        setBasis(basis + subAmount * location.state.T1 * 1000);
+        break;
+      case "2000":
+        setBasis(basis + subAmount * location.state.T2 * 1000);
+          break;
+      case "3000":
+        setBasis(basis + subAmount * location.state.T3 * 1000);
+        break;
+      default:
+        console.log("error", subType, subAmount);
+        break;
+      }
+    console.log("successfully added", subType, subAmount);
+    console.log("new basis:", basis);
+  }
+  
   const handleStreamElementsEvents = (data) => {
     if (data.listener == "follower-latest") {
       clearInterval(intervalId);
@@ -220,8 +253,8 @@ function Countdown(props) {
             fontSize: `${location.state.FontSize}px`,
           }}
         >
-          {hours > 9 ? hours : ("0" + hours).slice(-2)}:
-          {("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}
+          <{hours > 9 ? hours : ("0" + hours).slice(-2)}:
+          {("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}>
         </span>
       ) : (
         <span
