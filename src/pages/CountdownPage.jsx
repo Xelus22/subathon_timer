@@ -16,15 +16,45 @@ function CountdownPage(props) {
   const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000);
   const [socket, setSocket] = useState();
   const color = location.state.Color;
+
+  // implement queue to synchronously do async tasks
+  const [queue, setQueue] = useState({isProcessing: false, tasks: []})
+
+  useEffect(() => {
+    // console.log(queue.tasks);
+    // console.log("IM IN THE QUEUE");
+    if (queue.tasks.length === 0) return
+    if (queue.isProcessing) return
+
+    const task = queue.tasks[0]
+    setQueue((prev) => ({
+      isProcessing: true,
+      tasks: prev.tasks.slice(1),
+    }))
+    
+    Promise.resolve(targetDate)
+    .then(() => {
+      console.log("before:", targetDate);
+      console.log("time to add:", task);
+      setTargetDate(targetDate + task);
+    })
+    .finally(() => {
+      console.log("after:", targetDate);
+      setQueue((prev) => ({
+        isProcessing: false,
+        tasks: prev.tasks,
+      }))
+    })
+  }, [queue, queue.tasks, queue.isProcessing])
+
   
   const username = "justinfan20394";
   const token = "";
-  const channel = location.state.ChannelName;
+  const channel = location.state.ChannelName.toString().toLowerCase();
   
   const [lastSub, setLastSub] = useState("");
   const [lastResub, setLastResub] = useState("");
   const [lastCheer, setLastCheer] = useState("");
-  // const [lastSubGift, setLastSubGift] = useState("");
   const [lastSubGiftCommunity, setLastSubGiftCommunity] = useState("");
 
   const run = async () => {
@@ -66,14 +96,6 @@ function CountdownPage(props) {
         handleBits(bits);
       }
     });
-    // chat.on("SUBSCRIPTION_GIFT", (message) => {
-    //   if (message != lastSubGift) {
-    //     const msg = message.systemMessage || "";
-    //     console.log("SUBSCRIPTION_GIFT");
-    //     console.log(msg);
-    //     setLastSubGift(message);
-    //   }
-    // });
     chat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
@@ -131,7 +153,12 @@ function CountdownPage(props) {
         if (eventData.type === "donation") {
           //code to handle donation events
           clearInterval(intervalId);
-          setTargetDate(targetDate + eventData.message[0].amount * location.state.donationsTime * 1000);
+          setQueue(
+            (prev) => ({
+              isProcessing: prev.isProcessing,
+              tasks: prev.tasks.concat([eventData.message[0].amount * location.state.donationsTime * 1000]),
+            })
+          )
         }
       });
     } else if (location.state.Api == "2") {
@@ -165,7 +192,13 @@ function CountdownPage(props) {
 
   const handleBits = (bits) => {
     if (bits > 0) {
-      setTargetDate(targetDate + location.state.bitsTime * 1000);
+      // setTargetDate(targetDate + location.state.bitsTime * 1000);
+      setQueue(
+        (prev) => ({
+          isProcessing: prev.isProcessing,
+          tasks: prev.tasks.concat([location.state.bitsTime * 1000]),
+        })
+      )
     } else {
       console.log("bits ERROR", bits);
     }
@@ -173,38 +206,56 @@ function CountdownPage(props) {
 
   const handleSubs = (subType, subAmount) => {
     console.log("prev targetDate:", targetDate);
+    let addAmount = subAmount;
     switch (subType) {
       case "Prime":
       case "1000":
         // targetDate += subAmount * location.state.T1 * 1000;
-        setTargetDate(targetDate + subAmount * location.state.T1 * 1000);
+        addAmount *= location.state.T1;
         break;
       case "2000":
         // targetDate += subAmount * location.state.T2 * 1000;
-        setTargetDate(targetDate + subAmount * location.state.T2 * 1000);
+        addAmount *= location.state.T2;
         break;
       case "3000":
         // targetDate += subAmount * location.state.T3 * 1000;
-        setTargetDate(targetDate + subAmount * location.state.T3 * 1000);
+        addAmount *= location.state.T3;
         break;
       default:
         console.log("error", subType, subAmount);
         break;
       }
+    if (addAmount >= 1) {
+      // queue.tasks.concat(addAmount * 1000);
+      setQueue(
+        (prev) => ({
+          isProcessing: prev.isProcessing,
+          tasks: prev.tasks.concat([addAmount * 1000]),
+        })
+      )
+      // setTargetDate(targetDate + addAmount * 1000)
+    }
     console.log("successfully added", subType, subAmount);
     console.log("new targetDate:", targetDate);
-    //console.log(new Date(targetDate).toUTCString())
   }
   
   const handleStreamElementsEvents = (data) => {
     if (data.listener == "follower-latest") {
       clearInterval(intervalId);
-      // targetDate += location.state.FollowTime * 1000;
-      setTargetDate(targetDate + location.state.FollowTime * 1000);
+      setQueue(
+        (prev) => ({
+          isProcessing: prev.isProcessing,
+          tasks: prev.tasks.concat([location.state.FollowTime*1000]),
+        })
+      )
     } else if (data.listener == "tip-latest") {
       let amount = data.event.amount;
-      // targetDate += amount * location.state.donationsTime * 1000;
-      setTargetDate(targetDate + amount * location.state.donationsTime * 1000);
+      setQueue(
+        (prev) => ({
+          isProcessing: prev.isProcessing,
+          tasks: prev.tasks.concat([amount*location.state.donationsTime*1000]),
+        })
+      )
     }
   };
 
@@ -217,12 +268,23 @@ function CountdownPage(props) {
       return <Completionist />;
     } else {
       // Render a countdown
-      //console.log(new Date(targetDate).toUTCString())
       console.log(targetDate)
       localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
       return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
     }
   };
+
+  const handleClick=()=> {
+    console.log("button pressed");
+    console.log(queue);
+    setQueue(
+      (prev) => ({
+        isProcessing: prev.isProcessing,
+        tasks: prev.tasks.concat([60*1000]),
+      })
+    )
+    console.log(queue);
+  }
 
   return (
     <div>
@@ -236,11 +298,15 @@ function CountdownPage(props) {
         >
           <Countdown
             autoStart = {true}
-            key = {targetDate}
             date = {targetDate}
             renderer = {renderer}
           />
       </span>
+      {/* <button
+          className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"
+          style={{ display: "block" }}
+          onClick={handleClick}
+        ></button> */}
     </div>
   );
 }
