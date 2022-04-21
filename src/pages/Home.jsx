@@ -13,7 +13,7 @@ function Home(props) {
     const [T1SubsciptionTime, setT1SubsciptionTime] = useState(300);
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
     const [T3SubsciptionTime, setT3SubsciptionTime] = useState(900);
-    const [socketToken, setSocketToken] = useState(localStorage.getItem('token'));
+    const [socketToken, setSocketToken] = useState("");
     const [channelName, setChannelName] = useState("");
     const [color, setColor] = useState({ r: 0, g: 0, b: 0, a:100 });
     const [fontSize, setFontSize] = useState(150);
@@ -85,6 +85,9 @@ function Home(props) {
         }
         if(localStorage.followTime) {
             setFollowTime(localStorage.followTime);
+        }
+        if (localStorage.token) {
+            setSocketToken(localStorage.token);
         }
         if(localStorage.channelName) {
             setChannelName(localStorage.channelName);
@@ -181,14 +184,14 @@ function Home(props) {
                         </td>
                         <td>
                             <span className = "font-sans font-bold text-xl"> Your Channel Name:</span>
-                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" id="JWT-Token" placeholder='channel name e.g. iitztimmy' value={channelName} onChange={e => setChannelName(e.target.value)}/>
+                            <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="text" placeholder='channel name e.g. iitztimmy' value={channelName} onChange={e => setChannelName(e.target.value)}/>
                             <br/>
                             <span className = "font-sans font-bold text-xl"> Streamlabs Socket API Token (KEEP SECRET) </span><br/>
                             <span className = "font-sans font-bold text-xl"> OR StreamElements JWT Token </span><br/>
                             <span className = "font-sans font-bold text-xl"> StreamElements is MORE RELIABLE than StreamLabs </span><br/>
                             <span className = "font-sans font-bold text-xl"> Pick whichever you have donations setup for</span><br/>
                             <span className = "font-sans font-bold text-xl"> If no token is given, defaults to just being a countdown timer </span><br/>
-                            <span> Streamlabs -> settings -> API tokens -> Your Socket API Token </span>
+                            <span> {`Streamlabs -> settings -> API tokens -> Your Socket API Token`} </span>
                             <br/>
                             <button className={`${api == "0" ? "bg-sky-500 text-white" : "bg-zinc-200 text-black"} hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 mx-2 text-xm leading-5 rounded-md font-semibold`} onClick={e => {setApi("0")}}> None </button> 
                             <button className={`${api == "1" ? "bg-sky-500 text-white" : "bg-zinc-200 text-black"} hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 mx-2 text-xm leading-5 rounded-md font-semibold`} onClick={e => {setApi("1")}}> StreamLabs </button> 

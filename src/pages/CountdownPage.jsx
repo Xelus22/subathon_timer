@@ -2,16 +2,18 @@ import React, { useState, useEffect } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client"
 import { Chat, ChatEvents } from 'twitch-js'
-import { Countdown as countdownTimer} from 'react-countdown'
+import Countdown, {zeroPad} from 'react-countdown'
 
-function Countdown(props) {
+function CountdownPage(props) {
   const location = useLocation();
   const history = useHistory();
-  const [basis, setBasis] = useState();
-  const [timer, setTimer] = useState();
-  const [timerDisp, setTimerDisp] = useState(location.state.timeSeconds);
-  const [intervalId, setIntervalId] = useState();
-  const [buttonShow, setButtonShow] = useState(true);
+  let defaultAdditionalTime;
+  if (localStorage.totalTimeSeconds) {
+    defaultAdditionalTime = localStorage.totalTimeSeconds
+  } else {
+    defaultAdditionalTime = location.state.timeSeconds
+  }
+  const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000);
   const [socket, setSocket] = useState();
   const color = location.state.Color;
   
@@ -75,7 +77,7 @@ function Countdown(props) {
     chat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
-        const numGifts = message.parameters.senderCount
+        const numGifts = message.parameters.massGiftCount
         const subPlan = message.parameters.subPlan || ""
         console.log("SUBSCRIPTION_GIFT_COMMUNITY");
         console.log(numGifts, subPlan, msg);
@@ -90,6 +92,8 @@ function Countdown(props) {
 
   useEffect(() => {
     console.log("channelconnected:", channel);
+    // set target Date
+    // console.log("new target", new Date(targetDate).toUTCString())
     run();
   },[]);
 
@@ -114,40 +118,6 @@ function Countdown(props) {
 
   }, []);
 
-  let hours = Math.floor(timerDisp / (60 * 60));
-  let minutes = Math.floor((timerDisp / 60) % 60);
-  let seconds = Math.floor(timerDisp % 60);
-
-  useEffect(() => {
-    let _intervalId;
-    if (basis)
-      _intervalId = setInterval(() => {
-        setTimer(new Date().valueOf());
-      }, 10);
-    setIntervalId(_intervalId);
-    return () => {
-      clearInterval(_intervalId);
-    };
-  }, [basis]);
-
-  useEffect(() => {
-    if (basis && timer) {
-      const toDisp = Math.floor((basis - timer) / 1000);
-      if (timerDisp !== toDisp) {
-        setTimerDisp(toDisp);
-        localStorage.setItem("totalTimeSeconds", toDisp);
-      }
-    }
-    // eslint-disable-next-line
-  }, [timer, basis]);
-
-  useEffect(() => {
-    if (timerDisp <= 0) {
-      clearInterval(intervalId);
-    }
-    // eslint-disable-next-line
-  }, [timerDisp]);
-
   // streamelements or streamlabs socket
   if (socket) {
     if (location.state.Api == "1") {
@@ -161,10 +131,7 @@ function Countdown(props) {
         if (eventData.type === "donation") {
           //code to handle donation events
           clearInterval(intervalId);
-          setBasis(
-            basis +
-              eventData.message[0].amount * location.state.donationsTime * 1000
-          );
+          setTargetDate(targetDate + eventData.message[0].amount * location.state.donationsTime * 1000);
         }
       });
     } else if (location.state.Api == "2") {
@@ -198,88 +165,84 @@ function Countdown(props) {
 
   const handleBits = (bits) => {
     if (bits > 0) {
-      setBasis(basis + location.state.bitsTime * 1000);
+      setTargetDate(targetDate + location.state.bitsTime * 1000);
     } else {
       console.log("bits ERROR", bits);
     }
   }
 
   const handleSubs = (subType, subAmount) => {
-    console.log("prev basis:", basis);
+    console.log("prev targetDate:", targetDate);
     switch (subType) {
       case "Prime":
       case "1000":
-        setBasis(basis + subAmount * location.state.T1 * 1000);
+        // targetDate += subAmount * location.state.T1 * 1000;
+        setTargetDate(targetDate + subAmount * location.state.T1 * 1000);
         break;
       case "2000":
-        setBasis(basis + subAmount * location.state.T2 * 1000);
-          break;
+        // targetDate += subAmount * location.state.T2 * 1000;
+        setTargetDate(targetDate + subAmount * location.state.T2 * 1000);
+        break;
       case "3000":
-        setBasis(basis + subAmount * location.state.T3 * 1000);
+        // targetDate += subAmount * location.state.T3 * 1000;
+        setTargetDate(targetDate + subAmount * location.state.T3 * 1000);
         break;
       default:
         console.log("error", subType, subAmount);
         break;
       }
     console.log("successfully added", subType, subAmount);
-    console.log("new basis:", basis);
+    console.log("new targetDate:", targetDate);
+    //console.log(new Date(targetDate).toUTCString())
   }
   
   const handleStreamElementsEvents = (data) => {
     if (data.listener == "follower-latest") {
       clearInterval(intervalId);
-      setBasis(basis + location.state.FollowTime * 1000);
+      // targetDate += location.state.FollowTime * 1000;
+      setTargetDate(targetDate + location.state.FollowTime * 1000);
     } else if (data.listener == "tip-latest") {
       let amount = data.event.amount;
-      setBasis(basis + amount * location.state.donationsTime * 1000);
+      // targetDate += amount * location.state.donationsTime * 1000;
+      setTargetDate(targetDate + amount * location.state.donationsTime * 1000);
     }
   };
 
-  const handleClick = () => {
-    var t = new Date();
-    t.setSeconds(t.getSeconds() + location.state.timeSeconds);
-    setBasis(t.valueOf());
-    setButtonShow(false);
+  const Completionist = () => <span style={{color: `${location.state.Color}`,fontSize: `${location.state.FontSize}px`,}}>TIME'S UP</span>;
+  
+  // Renderer callback with condition
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <Completionist />;
+    } else {
+      // Render a countdown
+      //console.log(new Date(targetDate).toUTCString())
+      console.log(targetDate)
+      localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
+      return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
+    }
   };
 
   return (
     <div>
-      {timerDisp > 0 ? (
-        <span
-          onClick={() => history.push('/')}
+      <span
+          onClick={() => history.goBack()}
           style={{
             color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
             fontFamily: `${location.state.FontType}`,
             fontSize: `${location.state.FontSize}px`,
           }}
         >
-          <{hours > 9 ? hours : ("0" + hours).slice(-2)}:
-          {("0" + minutes).slice(-2)}:{("0" + seconds).slice(-2)}>
-        </span>
-      ) : (
-        <span
-          style={{
-            color: `${location.state.Color}`,
-            fontSize: `${location.state.FontSize}px`,
-          }}
-        >
-          TIME'S UP
-        </span>
-      )}
-
-      {buttonShow ? (
-        <button
-          className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"
-          style={{ display: "block" }}
-          onClick={handleClick}
-        >
-          Start Timer
-        </button>
-      ) : (
-        <br></br>
-      )}
+          <Countdown
+            autoStart = {true}
+            key = {targetDate}
+            date = {targetDate}
+            renderer = {renderer}
+          />
+      </span>
     </div>
   );
 }
 
-export default withRouter(Countdown);
+export default withRouter(CountdownPage);
