@@ -13,6 +13,7 @@ function CountdownPage(props) {
   } else {
     defaultAdditionalTime = location.state.timeSeconds
   }
+  var totalAdd = 0;
   const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000);
   const [socket, setSocket] = useState();
   const color = location.state.Color;
@@ -31,15 +32,18 @@ function CountdownPage(props) {
       isProcessing: true,
       tasks: prev.tasks.slice(1),
     }))
-    
-    Promise.resolve(targetDate)
-    .then(() => {
+
+    Promise.resolve(task)
+    .then((val) => {
       console.log("before:", targetDate);
-      console.log("time to add:", task);
-      setTargetDate(targetDate + task);
+      console.log("time to add:", val);
+      setTargetDate(targetDate + val);
+      totalAdd += val;
+    })
+    .then(() => {
+      console.log("check after 1:", targetDate);
     })
     .finally(() => {
-      console.log("after:", targetDate);
       setQueue((prev) => ({
         isProcessing: false,
         tasks: prev.tasks,
@@ -68,8 +72,7 @@ function CountdownPage(props) {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
-        console.log("SUBSCRIPTION");
-        console.log(`${userName}`, subPlan);
+        console.log(`ADD: SUBSCRIPTION ${userName}`, subPlan);
         setLastSub(message);
         handleSubs(subPlan, 1);
       }
@@ -79,8 +82,7 @@ function CountdownPage(props) {
         const msg = message.message || "";
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
-        console.log("RESUBSCRIPTION");
-        console.log(`${userName} ${msg}`, subPlan);
+        console.log(`ADD: RESUBSCRIPTION ${userName} ${msg}`, subPlan);
         setLastResub(message);
         handleSubs(subPlan, 1);
       }
@@ -89,9 +91,7 @@ function CountdownPage(props) {
       if (message != lastCheer) {
         const userName = message.username || "";
         const bits = message.bits || 0;
-        console.log("CHEER");
-        console.log(message);
-        console.log(`${userName} ${bits} bits`);
+        console.log(`ADD: CHEER ${userName} ${bits} bits`);
         setLastCheer(message);
         handleBits(bits);
       }
@@ -101,8 +101,7 @@ function CountdownPage(props) {
         const msg = message.systemMessage || "";
         const numGifts = message.parameters.massGiftCount
         const subPlan = message.parameters.subPlan || ""
-        console.log("SUBSCRIPTION_GIFT_COMMUNITY");
-        console.log(numGifts, subPlan, msg);
+        console.log("ADD: SUBSCRIPTION_GIFT_COMMUNITY",numGifts, subPlan, msg);
         setLastSubGiftCommunity(message);
         handleSubs(subPlan, numGifts);
       }
@@ -205,7 +204,6 @@ function CountdownPage(props) {
   }
 
   const handleSubs = (subType, subAmount) => {
-    console.log("prev targetDate:", targetDate);
     let addAmount = subAmount;
     switch (subType) {
       case "Prime":
@@ -222,7 +220,7 @@ function CountdownPage(props) {
         addAmount *= location.state.T3;
         break;
       default:
-        console.log("error", subType, subAmount);
+        console.log("error add", subType, subAmount);
         break;
       }
     if (addAmount >= 1) {
@@ -235,8 +233,7 @@ function CountdownPage(props) {
       )
       // setTargetDate(targetDate + addAmount * 1000)
     }
-    console.log("successfully added", subType, subAmount);
-    console.log("new targetDate:", targetDate);
+    console.log("check successfully added", subType, subAmount);
   }
   
   const handleStreamElementsEvents = (data) => {
@@ -268,7 +265,8 @@ function CountdownPage(props) {
       return <Completionist />;
     } else {
       // Render a countdown
-      console.log(targetDate)
+      // console.log("current target: ",targetDate)
+      // console.log(hours + days*24, minutes, seconds);
       localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
       return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
     }
@@ -286,10 +284,15 @@ function CountdownPage(props) {
     console.log(queue);
   }
 
+  const handleClickBack = () => {
+    console.log(totalAdd);
+    history.goBack();
+  }
+
   return (
     <div>
       <span
-          onClick={() => history.goBack()}
+          onClick={handleClickBack}
           style={{
             color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
             fontFamily: `${location.state.FontType}`,
@@ -302,11 +305,11 @@ function CountdownPage(props) {
             renderer = {renderer}
           />
       </span>
-      {/* <button
+      <button
           className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"
           style={{ display: "block" }}
           onClick={handleClick}
-        ></button> */}
+        ></button>
     </div>
   );
 }
