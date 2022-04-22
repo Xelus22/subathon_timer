@@ -41,7 +41,7 @@ function CountdownPage(props) {
       totalAdd += val;
     })
     .then(() => {
-      console.log("check after 1:", targetDate);
+      console.log("check after 1:", targetDate + task);
     })
     .finally(() => {
       setQueue((prev) => ({
@@ -113,6 +113,7 @@ function CountdownPage(props) {
 
   useEffect(() => {
     console.log("channelconnected:", channel);
+    console.log("initial target date check:", targetDate);
     // set target Date
     // console.log("new target", new Date(targetDate).toUTCString())
     run();
@@ -265,7 +266,7 @@ function CountdownPage(props) {
       return <Completionist />;
     } else {
       // Render a countdown
-      // console.log("current target: ",targetDate)
+      console.log("current target check: ",targetDate)
       // console.log(hours + days*24, minutes, seconds);
       localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
       return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
