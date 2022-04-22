@@ -306,11 +306,11 @@ function CountdownPage(props) {
             renderer = {renderer}
           />
       </span>
-      <button
+      {/* <button
           className="bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-400 active:bg-sky-700 px-4 py-2 text-xm leading-5 rounded-md font-semibold text-white"
           style={{ display: "block" }}
           onClick={handleClick}
-        ></button>
+        ></button> */}
     </div>
   );
 }
