@@ -13,9 +13,10 @@ function CountdownPage(props) {
   } else {
     defaultAdditionalTime = location.state.timeSeconds
   }
-  var totalAdd = 0;
+  const [totalAdd, setTotalAdd] = useState(0);
   const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000);
   const [socket, setSocket] = useState();
+  const [startTime, setStartTime] = useState(targetDate);
   const color = location.state.Color;
 
   // implement queue to synchronously do async tasks
@@ -38,7 +39,7 @@ function CountdownPage(props) {
       console.log("before:", targetDate);
       console.log("time to add:", val);
       setTargetDate(targetDate + val);
-      totalAdd += val;
+      setTotalAdd(totalAdd + val);
     })
     .then(() => {
       console.log("check after 1:", targetDate + task);
@@ -266,7 +267,10 @@ function CountdownPage(props) {
       return <Completionist />;
     } else {
       // Render a countdown
-      console.log("current target check: ",targetDate)
+      console.log("current target check: ",targetDate, "total add:", totalAdd)
+      if (startTime + totalAdd != targetDate) {
+        console.log("ERROR: ", startTime + totalAdd, targetDate, "DO NOT MATCH")
+      }
       // console.log(hours + days*24, minutes, seconds);
       localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
       return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
