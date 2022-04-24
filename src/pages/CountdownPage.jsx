@@ -62,12 +62,13 @@ function CountdownPage(props) {
   const [lastCheer, setLastCheer] = useState("");
   const [lastSubGiftCommunity, setLastSubGiftCommunity] = useState("");
 
+  const chat = new Chat({
+    username,
+    token,
+    log: { level: "warn" }
+  });
+
   const run = async () => {
-    const chat = new Chat({
-      username,
-      token,
-      log: { level: "warn" }
-    });
   
     chat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
@@ -200,7 +201,7 @@ function CountdownPage(props) {
           tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) * 1000]),
         })
       )
-      console.log("check bits successfully added:", bits);
+      console.log("check bits successfully added:", bits, "seconds added:", Math.floor(bits/500));
     } else {
       console.log("bits ERROR", bits);
     }
@@ -259,7 +260,7 @@ function CountdownPage(props) {
     }
   };
 
-  const Completionist = () => <span style={{color: `${location.state.Color}`,fontSize: `${location.state.FontSize}px`,}}>TIME'S UP</span>;
+  const Completionist = () => <span style={{color: `${location.state.Color}`,fontSize: `${location.state.FontSize}px`,}}>GG GO NEXT</span>;
   
   // Renderer callback with condition
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -295,6 +296,11 @@ function CountdownPage(props) {
     history.goBack();
   }
 
+  const onComplete = () => {
+    chat.disconnect();
+    console.log("chat disconneted from:", channel);
+  }
+
   return (
     <div>
       <span
@@ -309,6 +315,7 @@ function CountdownPage(props) {
             autoStart = {true}
             date = {targetDate}
             renderer = {renderer}
+            onComplete = {onComplete}
           />
       </span>
       {/* <button
