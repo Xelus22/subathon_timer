@@ -14,7 +14,7 @@ function CountdownPage(props) {
     defaultAdditionalTime = location.state.timeSeconds
   }
   const [totalAdd, setTotalAdd] = useState(0);
-  const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000);
+  const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000 );
   const [socket, setSocket] = useState();
   const [startTime, setStartTime] = useState(targetDate);
   const color = location.state.Color;
@@ -38,11 +38,8 @@ function CountdownPage(props) {
     .then((val) => {
       console.log("before:", targetDate);
       console.log("time to add:", val);
-      setTargetDate(targetDate + val);
+      setTargetDate(targetDate + val*1000);
       setTotalAdd(totalAdd + val);
-    })
-    .then(() => {
-      console.log("check after 1:", targetDate + task);
     })
     .finally(() => {
       setQueue((prev) => ({
@@ -69,7 +66,6 @@ function CountdownPage(props) {
   });
 
   const run = async () => {
-  
     chat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
@@ -154,11 +150,12 @@ function CountdownPage(props) {
       socket.on("event", (eventData) => {
         if (eventData.type === "donation") {
           //code to handle donation events
-          clearInterval(intervalId);
+          var donoTime = Math.floor(eventData.message[0].amount) * location.state.donationsTime;
+          console.log("Dono streamlabs received: $", eventData.message[0].amount, "time to add:", donoTime);
           setQueue(
             (prev) => ({
               isProcessing: prev.isProcessing,
-              tasks: prev.tasks.concat([Math.floor(eventData.message[0].amount) * location.state.donationsTime * 1000]),
+              tasks: prev.tasks.concat([donoTime]),
             })
           )
         }
@@ -194,11 +191,11 @@ function CountdownPage(props) {
 
   const handleBits = (bits) => {
     if (bits > 0) {
-      // setTargetDate(targetDate + location.state.bitsTime * 1000);
+      // setTargetDate(targetDate + location.state.bitsTime );
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) * 1000]),
+          tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) ]),
         })
       )
       console.log("check bits successfully added:", bits, "seconds added:", Math.floor(bits/500));
@@ -212,15 +209,15 @@ function CountdownPage(props) {
     switch (subType) {
       case "Prime":
       case "1000":
-        // targetDate += subAmount * location.state.T1 * 1000;
+        // targetDate += subAmount * location.state.T1 ;
         addAmount *= location.state.T1;
         break;
       case "2000":
-        // targetDate += subAmount * location.state.T2 * 1000;
+        // targetDate += subAmount * location.state.T2 ;
         addAmount *= location.state.T2;
         break;
       case "3000":
-        // targetDate += subAmount * location.state.T3 * 1000;
+        // targetDate += subAmount * location.state.T3 ;
         addAmount *= location.state.T3;
         break;
       default:
@@ -228,14 +225,14 @@ function CountdownPage(props) {
         break;
       }
     if (addAmount >= 1) {
-      // queue.tasks.concat(addAmount * 1000);
+      // queue.tasks.concat(addAmount );
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([addAmount * 1000]),
+          tasks: prev.tasks.concat([addAmount ]),
         })
       )
-      // setTargetDate(targetDate + addAmount * 1000)
+      // setTargetDate(targetDate + addAmount )
     }
     console.log("check subs successfully added", subType, subAmount);
   }
@@ -246,15 +243,16 @@ function CountdownPage(props) {
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([location.state.FollowTime*1000]),
+          tasks: prev.tasks.concat([location.state.FollowTime]),
         })
       )
     } else if (data.listener == "tip-latest") {
       let amount = data.event.amount;
+      console.log("Dono streamlabs received: $", amount);
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([Math.floor(amount)*location.state.donationsTime*1000]),
+          tasks: prev.tasks.concat([Math.floor(amount)*location.state.donationsTime]),
         })
       )
     }
@@ -270,7 +268,7 @@ function CountdownPage(props) {
     } else {
       // Render a countdown
       console.log("current target check: ",targetDate, "total add:", totalAdd)
-      if (startTime + totalAdd != targetDate) {
+      if (startTime + totalAdd*1000 != targetDate) {
         console.log("ERROR: ", startTime + totalAdd, targetDate, "DO NOT MATCH")
       }
       // console.log(hours + days*24, minutes, seconds);
@@ -285,7 +283,7 @@ function CountdownPage(props) {
     setQueue(
       (prev) => ({
         isProcessing: prev.isProcessing,
-        tasks: prev.tasks.concat([60*1000]),
+        tasks: prev.tasks.concat([60]),
       })
     )
     console.log(queue);
