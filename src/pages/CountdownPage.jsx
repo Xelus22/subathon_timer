@@ -197,9 +197,10 @@ function CountdownPage(props) {
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([location.state.bitsTime * 1000]),
+          tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) * 1000]),
         })
       )
+      console.log("check bits successfully added:", bits);
     } else {
       console.log("bits ERROR", bits);
     }
@@ -235,7 +236,7 @@ function CountdownPage(props) {
       )
       // setTargetDate(targetDate + addAmount * 1000)
     }
-    console.log("check successfully added", subType, subAmount);
+    console.log("check subs successfully added", subType, subAmount);
   }
   
   const handleStreamElementsEvents = (data) => {

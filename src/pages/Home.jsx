@@ -167,7 +167,7 @@ function Home(props) {
                             <span> Seconds per Follow </span>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={followTime} onChange={e => setFollowTime(e.target.value)}/>
                             <br/>
-                            <span> Seconds per 100 bits </span>
+                            <span> Seconds per 500 bits </span>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
                             <br/>
                             <span> Donations - seconds per $1 </span>
