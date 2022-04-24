@@ -157,7 +157,7 @@ function CountdownPage(props) {
           setQueue(
             (prev) => ({
               isProcessing: prev.isProcessing,
-              tasks: prev.tasks.concat([eventData.message[0].amount * location.state.donationsTime * 1000]),
+              tasks: prev.tasks.concat([Math.floor(eventData.message[0].amount) * location.state.donationsTime * 1000]),
             })
           )
         }
@@ -253,7 +253,7 @@ function CountdownPage(props) {
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([amount*location.state.donationsTime*1000]),
+          tasks: prev.tasks.concat([Math.floor(amount)*location.state.donationsTime*1000]),
         })
       )
     }
