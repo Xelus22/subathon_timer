@@ -299,6 +299,8 @@ function CountdownPage(props) {
   const onComplete = () => {
     chat.disconnect();
     console.log("chat disconneted from:", channel);
+    socket.disconnect();
+    console.log("socket disconneted");
   }
 
   return (
