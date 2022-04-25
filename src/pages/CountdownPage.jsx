@@ -59,14 +59,14 @@ function CountdownPage(props) {
   const [lastCheer, setLastCheer] = useState("");
   const [lastSubGiftCommunity, setLastSubGiftCommunity] = useState("");
 
-  const chat = new Chat({
+  const twitchChat = new Chat({
     username,
     token,
     log: { level: "warn" }
   });
 
   const runTwitchChat = async () => {
-    chat.on("SUBSCRIPTION", (message) => {
+    twitchChat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
@@ -75,7 +75,7 @@ function CountdownPage(props) {
         handleSubs(subPlan, 1);
       }
     });
-    chat.on("RESUBSCRIPTION", (message) => {
+    twitchChat.on("RESUBSCRIPTION", (message) => {
       if (message != lastResub) {
         const msg = message.message || "";
         const subPlan = message.parameters.subPlan || "";
@@ -85,7 +85,7 @@ function CountdownPage(props) {
         handleSubs(subPlan, 1);
       }
     });
-    chat.on("CHEER", (message) => {
+    twitchChat.on("CHEER", (message) => {
       if (message != lastCheer) {
         const userName = message.username || "";
         const bits = message.bits || 0;
@@ -94,7 +94,7 @@ function CountdownPage(props) {
         handleBits(bits);
       }
     });
-    chat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
+    twitchChat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
         const numGifts = message.parameters.massGiftCount
@@ -105,8 +105,8 @@ function CountdownPage(props) {
       }
     });
   
-    await chat.connect();
-    await chat.join(channel);
+    await twitchChat.connect();
+    await twitchChat.join(channel);
   };
 
 
@@ -289,7 +289,7 @@ function CountdownPage(props) {
   }
 
   const disconnectAllServices = () => {
-    chat.disconnect();
+    twitchChat.disconnect();
     console.log("chat disconneted from:", channel);
     if (socketStreamElements.connected) {
       console.log("streamelements socket disconneted");
