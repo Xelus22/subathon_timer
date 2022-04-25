@@ -65,7 +65,7 @@ function CountdownPage(props) {
     log: { level: "warn" }
   });
 
-  const run = async () => {
+  const runTwitchChat = async () => {
     chat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
@@ -109,85 +109,74 @@ function CountdownPage(props) {
     await chat.join(channel);
   };
 
+
+  const socketStreamlabs = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ["websocket"],})
+  const socketStreamElements = io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
+
+  const runSocketStreamlabs = async () => {
+    socketStreamlabs.on("connect", () => {
+      console.log("connected with streamlabs");
+      console.log(socketStreamlabs.connected); // true
+    });
+
+    socketStreamlabs.on("event", (eventData) => {
+      if (eventData.type === "donation") {
+        //code to handle donation events
+        var donoTime = Math.floor(eventData.message[0].amount) * location.state.donationsTime;
+        console.log("Dono streamlabs received: $", eventData.message[0].amount, "time to add:", donoTime);
+        setQueue(
+          (prev) => ({
+            isProcessing: prev.isProcessing,
+            tasks: prev.tasks.concat([donoTime]),
+          })
+        )
+      }
+    });
+  }
+  
+  const runSocketStreamelements = async () => {
+    //streamelements
+    socketStreamElements.on("connect", () => {
+      console.log("Successfully connected to streamelements websocket");
+      socketStreamElements.emit("authenticate", {
+        method: "jwt",
+        token: `${location.state.Token}`,
+      });
+    });
+
+    socketStreamElements.on("disconnect", () => {
+      console.log("disconnected from streamelements websocket");
+    });
+
+    socketStreamElements.on("authenticated", (data) => {
+      const { channelId } = data;
+      console.log(`Successfully connected to channel ${channelId}`);
+    });
+
+    socketStreamElements.on("event", (data) => {
+      if (lastSocketMessage != data) {
+        setLastSocketMessage(data)
+        handleStreamElementsEvents(data);
+      }
+    });
+
+    socketStreamElements.on("event:test", (data) => {
+      handleStreamElementsEvents(data);
+    });
+  };
+  
+
   useEffect(() => {
     console.log("channelconnected:", channel);
     console.log("initial target date check:", targetDate);
-    // set target Date
-    // console.log("new target", new Date(targetDate).toUTCString())
-    run();
-  },[]);
-
-  useEffect(() => {
-    localStorage.setItem("totalTimeSeconds", location.state.timeSeconds);
-    if (location.state.Token == "" || location.state.Api == "0") {
-      console.log("NO STREAMLABS/STREAMELEMENTS TOKEN GIVEN");
-    } else if (location.state.Api == "1") {
-      //streamlabs
-      setSocket(
-        io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {
-          transports: ["websocket"],
-        })
-      );
-      // eslint-disable-next-line
-    } else if (location.state.Api == "2") {
-      setSocket(
-        io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
-      );
-      // eslint-disable-next-line
+    runTwitchChat();
+    // setupSocket();
+    if (location.state.Api == "1" && location.state.Token != "") {
+      runSocketStreamlabs();
+    } else if (location.state.Api == "2" && location.state.Token != "") {
+      runSocketStreamelements();
     }
-
-  }, []);
-
-  // streamelements or streamlabs socket
-  if (socket) {
-    if (location.state.Api == "1") {
-      //streamlabs
-      socket.on("connect", () => {
-        console.log("connected with streamlabs");
-        console.log(socket.connected); // true
-      });
-
-      socket.on("event", (eventData) => {
-        if (eventData.type === "donation") {
-          //code to handle donation events
-          var donoTime = Math.floor(eventData.message[0].amount) * location.state.donationsTime;
-          console.log("Dono streamlabs received: $", eventData.message[0].amount, "time to add:", donoTime);
-          setQueue(
-            (prev) => ({
-              isProcessing: prev.isProcessing,
-              tasks: prev.tasks.concat([donoTime]),
-            })
-          )
-        }
-      });
-    } else if (location.state.Api == "2") {
-      //streamelements
-      socket.on("connect", () => {
-        console.log("Successfully connected to streamelements websocket");
-        socket.emit("authenticate", {
-          method: "jwt",
-          token: `${location.state.Token}`,
-        });
-      });
-
-      socket.on("disconnect", () => {
-        console.log("disconnected from streamelements websocket");
-      });
-
-      socket.on("authenticated", (data) => {
-        const { channelId } = data;
-        console.log(`Successfully connected to channel ${channelId}`);
-      });
-
-      socket.on("event", (data) => {
-        handleStreamElementsEvents(data);
-      });
-
-      socket.on("event:test", (data) => {
-        handleStreamElementsEvents(data);
-      });
-    };
-  };
+  },[])
 
   const handleBits = (bits) => {
     if (bits > 0) {
@@ -291,14 +280,25 @@ function CountdownPage(props) {
 
   const handleClickBack = () => {
     console.log(totalAdd);
+    disconnectAllServices();
     history.goBack();
   }
 
   const onComplete = () => {
+    disconnectAllServices();
+  }
+
+  const disconnectAllServices = () => {
     chat.disconnect();
     console.log("chat disconneted from:", channel);
-    socket.disconnect();
-    console.log("socket disconneted");
+    if (socketStreamElements.connected) {
+      console.log("streamelements socket disconneted");
+      socketStreamElements.disconnect();
+    }
+    if (socketStreamlabs.connected) {
+      console.log("streamelements socket disconneted");
+      socketStreamlabs.disconnect();
+    }
   }
 
   return (
