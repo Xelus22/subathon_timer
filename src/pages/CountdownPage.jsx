@@ -23,8 +23,8 @@ function CountdownPage(props) {
   const [queue, setQueue] = useState({isProcessing: false, tasks: []})
 
   useEffect(() => {
-    // console.log(queue.tasks);
-    // console.log("IM IN THE QUEUE");
+    // //console.log(queue.tasks);
+    // //console.log("IM IN THE QUEUE");
     if (queue.tasks.length === 0) return
     if (queue.isProcessing) return
 
@@ -36,8 +36,8 @@ function CountdownPage(props) {
 
     Promise.resolve(task)
     .then((val) => {
-      console.log("before:", targetDate);
-      console.log("time to add:", val);
+      //console.log("before:", targetDate);
+      //console.log("time to add:", val);
       setTargetDate(targetDate + val*1000);
       setTotalAdd(totalAdd + val);
     })
@@ -70,7 +70,7 @@ function CountdownPage(props) {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
-        console.log(`ADD: SUBSCRIPTION ${userName}`, subPlan);
+        //console.log(`ADD: SUBSCRIPTION ${userName}`, subPlan);
         setLastSub(message);
         handleSubs(subPlan, 1);
       }
@@ -80,7 +80,7 @@ function CountdownPage(props) {
         const msg = message.message || "";
         const subPlan = message.parameters.subPlan || "";
         const userName = message.username || "";
-        console.log(`ADD: RESUBSCRIPTION ${userName} ${msg}`, subPlan);
+        //console.log(`ADD: RESUBSCRIPTION ${userName} ${msg}`, subPlan);
         setLastResub(message);
         handleSubs(subPlan, 1);
       }
@@ -89,7 +89,7 @@ function CountdownPage(props) {
       if (message != lastCheer) {
         const userName = message.username || "";
         const bits = message.bits || 0;
-        console.log(`ADD: CHEER ${userName} ${bits} bits`);
+        //console.log(`ADD: CHEER ${userName} ${bits} bits`);
         setLastCheer(message);
         handleBits(bits);
       }
@@ -99,7 +99,7 @@ function CountdownPage(props) {
         const msg = message.systemMessage || "";
         const numGifts = message.parameters.massGiftCount
         const subPlan = message.parameters.subPlan || ""
-        console.log("ADD: SUBSCRIPTION_GIFT_COMMUNITY",numGifts, subPlan, msg);
+        //console.log("ADD: SUBSCRIPTION_GIFT_COMMUNITY",numGifts, subPlan, msg);
         setLastSubGiftCommunity(message);
         handleSubs(subPlan, numGifts);
       }
@@ -115,15 +115,15 @@ function CountdownPage(props) {
 
   const runSocketStreamlabs = async () => {
     socketStreamlabs.on("connect", () => {
-      console.log("connected with streamlabs");
-      console.log(socketStreamlabs.connected); // true
+      //console.log("connected with streamlabs");
+      //console.log(socketStreamlabs.connected); // true
     });
 
     socketStreamlabs.on("event", (eventData) => {
       if (eventData.type === "donation") {
         //code to handle donation events
         var donoTime = Math.floor(eventData.message[0].amount) * location.state.donationsTime;
-        console.log("Dono streamlabs received: $", eventData.message[0].amount, "time to add:", donoTime);
+        //console.log("Dono streamlabs received: $", eventData.message[0].amount, "time to add:", donoTime);
         setQueue(
           (prev) => ({
             isProcessing: prev.isProcessing,
@@ -137,7 +137,7 @@ function CountdownPage(props) {
   const runSocketStreamelements = async () => {
     //streamelements
     socketStreamElements.on("connect", () => {
-      console.log("Successfully connected to streamelements websocket");
+      //console.log("Successfully connected to streamelements websocket");
       socketStreamElements.emit("authenticate", {
         method: "jwt",
         token: `${location.state.Token}`,
@@ -145,12 +145,12 @@ function CountdownPage(props) {
     });
 
     socketStreamElements.on("disconnect", () => {
-      console.log("disconnected from streamelements websocket");
+      //console.log("disconnected from streamelements websocket");
     });
 
     socketStreamElements.on("authenticated", (data) => {
       const { channelId } = data;
-      console.log(`Successfully connected to channel ${channelId}`);
+      //console.log(`Successfully connected to channel ${channelId}`);
     });
 
     socketStreamElements.on("event", (data) => {
@@ -167,8 +167,8 @@ function CountdownPage(props) {
   
 
   useEffect(() => {
-    console.log("channelconnected:", channel);
-    console.log("initial target date check:", targetDate);
+    //console.log("channelconnected:", channel);
+    //console.log("initial target date check:", targetDate);
     runTwitchChat();
     // setupSocket();
     if (location.state.Api == "1" && location.state.Token != "") {
@@ -187,9 +187,9 @@ function CountdownPage(props) {
           tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) ]),
         })
       )
-      console.log("check bits successfully added:", bits, "seconds added:", Math.floor(bits/500));
+      //console.log("check bits successfully added:", bits, "seconds added:", Math.floor(bits/500));
     } else {
-      console.log("bits ERROR", bits);
+      //console.log("bits ERROR", bits);
     }
   }
 
@@ -210,7 +210,7 @@ function CountdownPage(props) {
         addAmount *= location.state.T3;
         break;
       default:
-        console.log("error add", subType, subAmount);
+        //console.log("error add", subType, subAmount);
         break;
       }
     if (addAmount >= 1) {
@@ -223,7 +223,7 @@ function CountdownPage(props) {
       )
       // setTargetDate(targetDate + addAmount )
     }
-    console.log("check subs successfully added", subType, subAmount);
+    //console.log("check subs successfully added", subType, subAmount);
   }
   
   const handleStreamElementsEvents = (data) => {
@@ -237,7 +237,7 @@ function CountdownPage(props) {
       )
     } else if (data.listener == "tip-latest") {
       let amount = data.event.amount;
-      console.log("Dono streamlabs received: $", amount);
+      //console.log("Dono streamlabs received: $", amount);
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
@@ -256,30 +256,30 @@ function CountdownPage(props) {
       return <Completionist />;
     } else {
       // Render a countdown
-      console.log("current target check: ",targetDate, "total add:", totalAdd)
+      //console.log("current target check: ",targetDate, "total add:", totalAdd)
       if (startTime + totalAdd*1000 != targetDate) {
-        console.log("ERROR: ", startTime + totalAdd, targetDate, "DO NOT MATCH")
+        //console.log("ERROR: ", startTime + totalAdd, targetDate, "DO NOT MATCH")
       }
-      // console.log(hours + days*24, minutes, seconds);
+      // //console.log(hours + days*24, minutes, seconds);
       localStorage.setItem('totalTimeSeconds', ((days * 24 + hours) * 60 + minutes) * 60 + seconds);
       return <span>{zeroPad(hours + days*24)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
     }
   };
 
   const handleClick=()=> {
-    console.log("button pressed");
-    console.log(queue);
+    //console.log("button pressed");
+    //console.log(queue);
     setQueue(
       (prev) => ({
         isProcessing: prev.isProcessing,
         tasks: prev.tasks.concat([60]),
       })
     )
-    console.log(queue);
+    //console.log(queue);
   }
 
   const handleClickBack = () => {
-    console.log(totalAdd);
+    //console.log(totalAdd);
     disconnectAllServices();
     history.goBack();
   }
@@ -290,13 +290,13 @@ function CountdownPage(props) {
 
   const disconnectAllServices = () => {
     twitchChat.disconnect();
-    console.log("chat disconneted from:", channel);
+    //console.log("chat disconneted from:", channel);
     if (socketStreamElements.connected) {
-      console.log("streamelements socket disconneted");
+      //console.log("streamelements socket disconneted");
       socketStreamElements.disconnect();
     }
     if (socketStreamlabs.connected) {
-      console.log("streamelements socket disconneted");
+      //console.log("streamelements socket disconneted");
       socketStreamlabs.disconnect();
     }
   }
