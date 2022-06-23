@@ -21,6 +21,7 @@ function Login() {
             <div className = "font-sans font-bold text-2xl"> Subathon Timer </div>
             <h4 className = "font-sans font-bold text-xl"> Made by <a href = "https://www.twitch.tv/xelus22" className = "text-blue-800">Xelus22</a></h4>
             <h3> Add this as a browser source to your OBS then interact with it </h3>
+            <h3> Open source at <a className='text-[#0000ff]' href='https://github.com/Xelus22/subathon_timer'>https://github.com/Xelus22/subathon_timer</a></h3>
             {/* <h3> Please login and authorize usage of twitch for the most reliable service</h3> */}
             
             <br/>
