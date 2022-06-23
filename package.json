@@ -16,6 +16,7 @@
     "font-picker-react": "^3.5.2",
     "query-string": "^7.1.0",
     "react": "^17.0.0",
+    "react-collapsible": "^2.9.0",
     "react-color": "^2.19.3",
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.0",

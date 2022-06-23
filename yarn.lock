@@ -1881,6 +1881,11 @@ quick-lru@^5.1.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
+react-collapsible@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/react-collapsible/-/react-collapsible-2.9.0.tgz#43eba5d0fe37a7a63d51b22b1c07c07acc131a25"
+  integrity sha512-H+HJREPlVqPVajFbPQF7TTlUTUNkt/sGOJnlfxlWHu6SJKIol8xw38OryPHJDcXxD5ArzZgBqwS8o54C432S2Q==
+
 react-color@^2.19.3:
   version "2.19.3"
   resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"

@@ -271,7 +271,7 @@ function Home(props) {
                             ChannelName: channelName,
                         }
                     }}
-                > To Countdown</Link>
+                > START Countdown</Link>
             </button>
 
             
