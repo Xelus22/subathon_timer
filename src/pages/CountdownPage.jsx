@@ -184,7 +184,7 @@ function CountdownPage(props) {
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
-          tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/500) ]),
+          tasks: prev.tasks.concat([location.state.bitsTime * Math.floor(bits/location.state.bitsAmount) ]),
         })
       )
       //console.log("check bits successfully added:", bits, "seconds added:", Math.floor(bits/500));

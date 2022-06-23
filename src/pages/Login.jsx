@@ -61,7 +61,7 @@ function Login() {
             <img src = {configuration_window}></img>
             <br/>
             <p>
-                Add in your channel name and pick your preferred provider for <span className='font-bold'>Donations and Follows</span>.
+                Add in your channel name (for subs and bits) and pick your preferred provider for <span className='font-bold'>Donations and Follows</span>.
                 <br/>
                 <span className='font-bold'>REMEMBER TO NEVER SHOW THIS TO ANYONE.</span>
                 <ul className='list-disc list-inside'>

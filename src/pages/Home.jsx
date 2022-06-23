@@ -9,6 +9,7 @@ function Home(props) {
     const [startingMinutes, setStartingMinutes] = useState(0);
     const [startingSeconds, setStartingSeconds] = useState(0);
     const [bitsTime, setBitsTime] = useState(60);
+    const [bitsAmount, setBitsAmount] = useState(500);
     const [donationsTime, setDonationsTime] = useState(60);
     const [T1SubsciptionTime, setT1SubsciptionTime] = useState(300);
     const [T2SubsciptionTime, setT2SubsciptionTime] = useState(600);
@@ -47,6 +48,7 @@ function Home(props) {
         setColor({ r: 0, g: 0, b: 0, a:100 });
         setFontSize(150);
         setFollowTime(0);
+        setBitsAmount(500);
         setFont("Open Sans");
     };
 
@@ -82,6 +84,9 @@ function Home(props) {
         }
         if(localStorage.bitsTime) {
             setBitsTime(localStorage.bitsTime);
+        }
+        if(localStorage.bitsAmount) {
+            setBitsAmount(localStorage.bitsAmount);
         }
         if(localStorage.followTime) {
             setFollowTime(localStorage.followTime);
@@ -140,8 +145,10 @@ function Home(props) {
         localStorage.setItem('bitsTime', bitsTime);
         localStorage.setItem('followTime', followTime);
         localStorage.setItem('channelName', channelName);
+        localStorage.setItem('bitsAmount', bitsAmount);
+
         // eslint-disable-next-line
-    }, [T1SubsciptionTime, T2SubsciptionTime, T3SubsciptionTime, donationsTime, bitsTime, followTime, channelName]);
+    }, [T1SubsciptionTime, T2SubsciptionTime, T3SubsciptionTime, donationsTime, bitsTime, followTime, channelName, bitsAmount]);
 
     const submit = () => {
         localStorage.setItem('totalTimeSeconds', startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1);
@@ -167,7 +174,7 @@ function Home(props) {
                             <span> Seconds per Follow </span>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={followTime} onChange={e => setFollowTime(e.target.value)}/>
                             <br/>
-                            <span> Seconds per 500 bits </span>
+                            <span> Seconds per <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500 w-24" type="number" id="Seconds" value={bitsAmount} onChange={e => setBitsAmount(e.target.value)}/> bits </span>
                             <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-sky-500 focus:ring-sky-500" type="number" id="Seconds" value={bitsTime} onChange={e => setBitsTime(e.target.value)}/>
                             <br/>
                             <span> Donations - seconds per $1 </span>
@@ -258,6 +265,7 @@ function Home(props) {
                         state: {
                             timeSeconds: startingHours * 60 * 60 + startingMinutes * 60 + startingSeconds * 1,
                             bitsTime: bitsTime,
+                            bitsAmount: bitsAmount,
                             donationsTime: donationsTime,
                             T1: T1SubsciptionTime,
                             T2: T2SubsciptionTime,
