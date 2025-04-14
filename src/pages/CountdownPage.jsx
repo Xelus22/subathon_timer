@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client"
 import { Chat, ChatEvents } from 'twitch-js'
@@ -17,7 +17,10 @@ function CountdownPage(props) {
   const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000 );
   const [socket, setSocket] = useState();
   const [startTime, setStartTime] = useState(targetDate);
+  const [lastSocketMessage, setLastSocketMessage] = useState(null);
+  const [pausedStart, setPausedStart] = useState(Date.now());
   const color = location.state.Color;
+  const countdownRef = useRef(null);
 
   // implement queue to synchronously do async tasks
   const [queue, setQueue] = useState({isProcessing: false, tasks: []})
@@ -38,7 +41,12 @@ function CountdownPage(props) {
     .then((val) => {
       //console.log("before:", targetDate);
       //console.log("time to add:", val);
-      setTargetDate(targetDate + val*1000);
+      let timePaused = 0;
+      if (countdownRef.current.isPaused()) {
+        timePaused = Date.now() - pausedStart;
+        setPausedStart(Date.now());
+      }
+      setTargetDate(targetDate + timePaused + val*1000);
       setTotalAdd(totalAdd + val);
     })
     .finally(() => {
@@ -57,6 +65,7 @@ function CountdownPage(props) {
   const [lastSub, setLastSub] = useState("");
   const [lastResub, setLastResub] = useState("");
   const [lastCheer, setLastCheer] = useState("");
+  const [lastSubGift, setLastSubGift] = useState("");
   const [lastSubGiftCommunity, setLastSubGiftCommunity] = useState("");
 
   const twitchChat = new Chat({
@@ -66,6 +75,15 @@ function CountdownPage(props) {
   });
 
   const runTwitchChat = async () => {
+    twitchChat.on('DISCONNECTED', () => {
+      document.location = document.location;
+    });
+    twitchChat.on('RECONNECT', () => {
+      document.location = document.location;
+    });
+    twitchChat.on('ERROR_ENCOUNTERED', () => {
+      document.location = document.location;
+    });
     twitchChat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
@@ -94,6 +112,18 @@ function CountdownPage(props) {
         handleBits(bits);
       }
     });
+    // twitchChat.on("SUBSCRIPTION_GIFT", (message) => {
+    //   if (message != lastSubGift) {
+    //     const msg = message.systemMessage || "";
+    //     const months = message.parameters.months
+    //     const subPlan = message.parameters.subPlan || ""
+    //     //console.log("ADD: SUBSCRIPTION_GIFT",numGifts, subPlan, msg);
+    //     setLastSubGift(message);
+    //     if (months === 1) {
+    //       handleSubs(subPlan, months);
+    //     }
+    //   }
+    // });
     twitchChat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
@@ -104,16 +134,36 @@ function CountdownPage(props) {
         handleSubs(subPlan, numGifts);
       }
     });
+    twitchChat.on('PRIVMSG', (message) => {
+      // console.log(`${message.tags.badges.moderator} -> ${message.username}: ${message.message}`);
+      if (message.tags.badges.moderator || message.tags.badges.broadcaster) {
+        const messageTokens = message.message.split(' ');
+        if (messageTokens[0] === '!addtime') {
+          const timeToAdd = parseInt(messageTokens[1]);
+          setQueue(
+            (prev) => ({
+              isProcessing: prev.isProcessing,
+              tasks: prev.tasks.concat([timeToAdd]),
+            })
+          )
+        } else if (messageTokens[0] === '!pause') {
+          countdownRef.current.pause();
+        } else if (messageTokens[0] === '!resume') {
+          countdownRef.current.start();
+        }
+      }
+    })
   
     await twitchChat.connect();
     await twitchChat.join(channel);
   };
 
 
-  const socketStreamlabs = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ["websocket"],})
-  const socketStreamElements = io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
+  let socketStreamlabs;
+  let socketStreamElements;
 
   const runSocketStreamlabs = async () => {
+    socketStreamlabs = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ["websocket"],});
     socketStreamlabs.on("connect", () => {
       //console.log("connected with streamlabs");
       //console.log(socketStreamlabs.connected); // true
@@ -135,6 +185,7 @@ function CountdownPage(props) {
   }
   
   const runSocketStreamelements = async () => {
+    socketStreamElements = io(`https://realtime.streamelements.com`, { transports: ["websocket"] });
     //streamelements
     socketStreamElements.on("connect", () => {
       //console.log("Successfully connected to streamelements websocket");
@@ -235,9 +286,9 @@ function CountdownPage(props) {
           tasks: prev.tasks.concat([location.state.FollowTime]),
         })
       )
-    } else if (data.listener == "tip-latest") {
-      let amount = data.event.amount;
-      //console.log("Dono streamlabs received: $", amount);
+    } else if (data.listener == "tip-latest" || data.type === 'tip') {
+      let amount = data.data.amount;
+      //console.log("Dono streamelements received: $", amount);
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
@@ -291,11 +342,11 @@ function CountdownPage(props) {
   const disconnectAllServices = () => {
     twitchChat.disconnect();
     //console.log("chat disconneted from:", channel);
-    if (socketStreamElements.connected) {
+    if (socketStreamElements && socketStreamElements.connected) {
       //console.log("streamelements socket disconneted");
       socketStreamElements.disconnect();
     }
-    if (socketStreamlabs.connected) {
+    if (socketStreamlabs && socketStreamlabs.connected) {
       //console.log("streamelements socket disconneted");
       socketStreamlabs.disconnect();
     }
@@ -304,6 +355,7 @@ function CountdownPage(props) {
   return (
     <div>
       <span
+          id="countdown"
           onClick={handleClickBack}
           style={{
             color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
@@ -312,10 +364,24 @@ function CountdownPage(props) {
           }}
         >
           <Countdown
-            autoStart = {true}
+            autoStart = {localStorage.getItem('autostart') !== 'false'}
             date = {targetDate}
             renderer = {renderer}
             onComplete = {onComplete}
+            ref = {countdownRef}
+            onPause={(timeDelta) => {
+              setPausedStart(Date.now());
+              localStorage.setItem('autostart', false);
+            }}
+            onStart={(timeDelta) => {
+              setQueue(
+                (prev) => ({
+                  isProcessing: prev.isProcessing,
+                  tasks: prev.tasks.concat([(Date.now() - pausedStart)/1000]),
+                })
+              )
+              localStorage.setItem('autostart', true);
+            }}
           />
       </span>
       {/* <button
